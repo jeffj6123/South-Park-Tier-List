@@ -96,6 +96,12 @@ html {
     min-width: 143px;
     font-size: 200px;
     line-height: .75;
+    position: relative;
+
+    .letter {
+      position: sticky;
+      top: 5px;
+    }
   }
   
   .tier-title {
