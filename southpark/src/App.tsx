@@ -24,15 +24,16 @@ function App() {
   const eposidesMap: any = {};
   
   episodes.forEach(ep => {
-    const id = ep.season.toString() + ep.episode.toString();
+    const id = ep.season.toString() +(ep.episode < 10 ? '0' : '') + ep.episode.toString()
+    let tier = "unranked"
     if(id in rankingMap) {
-      const tier = rankingMap[id].tier;
-      if(! (tier in eposidesMap)) {
+      tier = rankingMap[id].tier;
+    }
+    if(! (tier in eposidesMap)) {
         eposidesMap[tier] = [];
       }
       eposidesMap[tier].push(ep);
-  
-    }
+
   })
 
   return (
@@ -46,6 +47,7 @@ function App() {
       <Row episodes={eposidesMap['c']} season={'C'}></Row>
       <Row episodes={eposidesMap['d']} season={'D'}></Row>
       <Row episodes={eposidesMap['f']} season={'F'}></Row>
+      <Row episodes={eposidesMap['unranked']} season={'U'}></Row>
       </div>
     </div>
   );

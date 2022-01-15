@@ -677,4 +677,4 @@ export const ranks =
     }
 ]
 
-export const rankingMap = ranks.reduce((map, ep) => { map[ep.season.toString() +  ep.episode.toString()] = ep; return map; }, {} as Record<string, any>)
+export const rankingMap = ranks.reduce((map, ep) => { map[ep.season.toString() +(ep.episode < 10 ? '0' : '') + ep.episode.toString()] = ep; return map; }, {} as Record<string, any>)
