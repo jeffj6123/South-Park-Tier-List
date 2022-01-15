@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build2": "nodemon index.ts",
+    "build": "tsc --project './tsconfig.json'",
+    "dev": "tsc tsconfig.json --watch nodemon dist",
+    "test": "tsc --project './tsconfig.json' && ./node_modules/.bin/mocha dist/**/*.spec.js",
+    "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/**.ts'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "github:types/express",
+    "express": "^4.17.2",
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0"
+  }
+}
