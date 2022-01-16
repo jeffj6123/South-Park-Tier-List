@@ -4,6 +4,7 @@ import Header from './components/header';
 import Row, { Episode } from './components/row';
 import { data } from "./all_episodes";
 import { ranks, rankingMap } from './ranks';
+import { Grid } from './components/sortable';
 
 const colors = ['#EE324B', '#4D7DBD', '#00B8C4' ] //, '#FFE11D'];
 
@@ -39,6 +40,8 @@ function App() {
   return (
     <div>
       <Header></Header>
+      <Grid></Grid>
+      
       <div className="App">
 
       <Row episodes={eposidesMap['s']} season={'S'}></Row>

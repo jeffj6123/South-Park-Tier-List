@@ -6,9 +6,6 @@
       "sourceMap": true,
       "esModuleInterop": true
     },
-    "files": [
-      "./node_modules/@types/express/index.d.ts",
-    ],
     "include": [
       "src/**/*.ts"
     ],

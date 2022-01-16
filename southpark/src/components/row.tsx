@@ -40,6 +40,7 @@ const Row = ({ episodes, season }: RowProps) => {
 
 export const EpisodeItem = ({ episode }: { episode: Episode }) => {
     return (<div className='episode background-one rounded' style={{'backgroundColor': episode.backgroundColor}}>
+        {/* <div style={{'width': '100%', 'height': '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></div> */}
         <div className='thumbnail-container'>
             <img className='rounded' src={episode.thumbnail}></img>
         </div>
