@@ -1,7 +1,5 @@
 import React from 'react';
-// import logo from './logo.svg';
-// import './App.scss';
-// import testImage from '../testimage.jpg'
+import { IRenderComponent } from './sortable';
 export interface Episode {
     name: string;
     episode: number;
@@ -11,42 +9,51 @@ export interface Episode {
 
     backgroundColor: string;
     thumbnail: string;
+
+    id: string;
 }
 
 export interface RowProps {
-    season: string;
+    id: string;
     episodes: Episode[];
-
 }
 
-const Row = ({ episodes, season }: RowProps) => {
-    return (<div className='tier'>
-        <div className='tier-name'>
-            <div className='letter'>
-            {season}
-            </div>
-        </div>
-        <div>
-            <h2 className='tier-title'>
-                Tier ({episodes.length})
-            </h2>
-            <div className='episode-container'>
-                {episodes.map(episode => <EpisodeItem episode={episode} key={episode.name}></EpisodeItem>)}
-            </div>
-        </div>
-    </div>);
+export interface EpisodeItemProps extends IRenderComponent {
+    data: Episode;
 }
 
+export const EpisodeItem = ({ data, row, changeTier }: EpisodeItemProps) => {
 
-export const EpisodeItem = ({ episode }: { episode: Episode }) => {
-    return (<div className='episode background-one rounded' style={{'backgroundColor': episode.backgroundColor}}>
+    let quickTiers;
+
+    function emitChangeTier(tier: string) {
+        if (changeTier) {
+            changeTier(tier)
+        }
+    }
+
+    if (row) {
+        quickTiers = (<div className='quick-tier-container'>
+            {['s', 'a', 'b', 'c', 'd', 'f', 'u'].filter(tier => tier !== row).map(tier =>
+                <button className='quick-tier' key={tier} onClick={() => emitChangeTier(tier)}>
+                    {tier}
+                </button>
+            )}
+        </div>)
+    }
+
+
+    // console.log("rerender ep")
+    return (<div className='episode background-one rounded' style={{ 'backgroundColor': data.backgroundColor }}>
         {/* <div style={{'width': '100%', 'height': '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></div> */}
         <div className='thumbnail-container'>
-            <img className='rounded' src={episode.thumbnail}></img>
+            <img className='rounded' src={data.thumbnail}></img>
         </div>
-        <div style={{'fontSize': '15px'}}>
-            <div>S{episode.season} E{episode.episode} </div> {episode.name}</div>
+        <div style={{ 'fontSize': '15px' }}>
+            <div>S{data.season} E{data.episode} </div> {data.name}</div>
+        {quickTiers}
     </div>)
 }
 
-export default Row;
+
+export const MemoEp = React.memo(EpisodeItem);

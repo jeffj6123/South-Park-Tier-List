@@ -1,98 +1,110 @@
-import React, { useState } from "react";
+import React, {ComponentClass, FunctionComponent, useState } from "react";
 import {
   DndContext,
   DragOverlay,
-  closestCorners,
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors
+  useSensors,
+  DragStartEvent,
+  closestCenter
 } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove, horizontalListSortingStrategy, rectSwappingStrategy, sortableKeyboardCoordinates, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDroppable } from "@dnd-kit/core";
-import {
-  rectSortingStrategy,
-  SortableContext,
-} from "@dnd-kit/sortable";
+import { Episode } from "./row";
 
+export interface IRenderComponent {
+  id: string;
+  data: any;
+  row?: string;
+  changeTier?: (tier: string) => void;
+}
 
-const wrapperStyle = {
-  display: "flex",
-};
+type RenderComponentType = FunctionComponent<IRenderComponent> | ComponentClass<IRenderComponent>;
 
-const defaultAnnouncements = {
-  onDragStart(id: string) {
-    return `Picked up draggable item ${id}.`;
-  },
-  onDragOver(id: string, overId: string) {
-    if (overId) {
-      return `Draggable item ${id} was moved over droppable area ${overId}.`
-    }
+export interface GridProps {
+  groups: Record<string, any[]>;
+  listOrder: string[];
+  disabled?: boolean;
+  RenderComponent: RenderComponentType;
 
-    return `Draggable item ${id} is no longer over a droppable area.`;
-  },
-  onDragEnd(id: string, overId: string) {
-    if (overId) {
-      return `Draggable item ${id} was dropped over droppable area ${overId}`
-    }
+}
 
-    return `Draggable item ${id} was dropped.`;
-  },
-  onDragCancel(id: string) {
-    return `Dragging was cancelled. Draggable item ${id} was dropped.`
-  }
-};
+export function Grid(props: GridProps) {
+  const [items, setItems] = useState(props.groups);
+  const [activeId, setActiveId] = useState<Episode | null>(null);
 
-export function Grid() {
-  const [items, setItems] = useState({
-    root: ["1", "2", "3"],
-    container1: ["4", "5", "6"],
-    container2: ["7", "8", "9"],
-  });
-  const [activeId, setActiveId] = useState(null);
+  const ItemMap: Record<string, { row: string, item: any }> = {};
 
-  console.log(items)
+  Object.keys(items).forEach(key => {
+    items[key].forEach(item => {
+      ItemMap[item.id] = {
+        row: key,
+        item: item
+      }
+    })
+  })
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {activationConstraint: {distance: 10}}),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates
     })
   );
 
+
   return (
-    <div style={wrapperStyle}>
+    <div>
       <DndContext
-        announcements={defaultAnnouncements}
         sensors={sensors}
-        collisionDetection={closestCorners}
+        collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <Container id="root" items={items.root} />
-        <Container id="container1" items={items.container1} />
-        <Container id="container2" items={items.container2} />
-        {/* <Container id="container3" items={items.container3} /> */}
-        <DragOverlay>{activeId ? <Item id={activeId} /> : null}</DragOverlay>
+        <div>
+          {props.listOrder.map((id: string) => (
+            <MemoContainer id={id} items={items[id]} key={id} ComponentRef={props.RenderComponent} 
+            changeTier={(tier, itemId, index) => moveTier(tier, itemId, index, id)}/>
+          ))}
+        </div>
+
+        <DragOverlay>{activeId ? <props.RenderComponent id={activeId.id} data={activeId}></props.RenderComponent> : null}</DragOverlay>
       </DndContext>
     </div>
   );
 
-  function findContainer(id: string) {
-    if (id in items) {
-      return id;
-    }
+  function moveTier(tier: string, id: string, index: number, itemsContainer) {
+    setItems((prev) => {
+      const nextTier = findContainer(tier);
 
-    return Object.keys(items).find(key => items[key].includes(id));
+      return {
+        ...prev,
+        [itemsContainer]: [
+          ...prev[itemsContainer].filter((item) => item.id !== id)
+        ],
+        [nextTier]: [
+          items[itemsContainer][index],
+          ...prev[nextTier]
+        ]
+      };
+    });
   }
 
-  function handleDragStart(event: any) {
+  function findContainer(id: string) {
+    if(id in items) {
+      return id;
+    }
+    return ItemMap[id].row;
+  }
+
+  function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
-    console.log("test")
-    setActiveId(id);
+
+    setActiveId(ItemMap[id].item);
   }
 
   function handleDragOver(event: any) {
@@ -117,8 +129,8 @@ export function Grid() {
       const overItems = prev[overContainer];
 
       // Find the indexes for the items
-      const activeIndex = activeItems.indexOf(id);
-      const overIndex = overItems.indexOf(overId);
+      const activeIndex = activeItems.findIndex(ep => ep.id === id);
+      const overIndex = overItems.findIndex(ep => ep.id === overId);
 
       let newIndex;
       if (overId in prev) {
@@ -126,7 +138,7 @@ export function Grid() {
         newIndex = overItems.length + 1;
       } else {
         const isBelowLastItem =
-          over &&
+          over && draggingRect &&
           overIndex === overItems.length - 1 &&
           draggingRect.offsetTop > over.rect.offsetTop + over.rect.height;
 
@@ -138,7 +150,7 @@ export function Grid() {
       return {
         ...prev,
         [activeContainer]: [
-          ...prev[activeContainer].filter((item) => item !== active.id)
+          ...prev[activeContainer].filter((item) => item.id !== active.id)
         ],
         [overContainer]: [
           ...prev[overContainer].slice(0, newIndex),
@@ -165,8 +177,8 @@ export function Grid() {
       return;
     }
 
-    const activeIndex = items[activeContainer].indexOf(active.id);
-    const overIndex = items[overContainer].indexOf(overId);
+    const activeIndex = items[activeContainer].findIndex(ep => ep.id === id);
+    const overIndex = items[overContainer].findIndex(ep => ep.id === overId);
 
     if (activeIndex !== overIndex) {
       setItems((items) => ({
@@ -179,54 +191,57 @@ export function Grid() {
   }
 }
 
+export interface ContainerProps {
+  id: string;
+  items: any[];
+  ComponentRef: RenderComponentType;
+  changeTier: (tier: string, id: string, index: number) => void;
+}
 
-const containerStyle = {
-  background: "#dadada",
-  padding: 10,
-  margin: 10,
-  flex: 1,
-  display: "flex",
-//   flexWrap: true
-};
-
-export function Container(props:any ) {
+export function Container(props: ContainerProps) {
   const { id, items } = props;
 
   const { setNodeRef } = useDroppable({
     id
   });
 
+  // console.log("rerender")
   return (
-    <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
-      <div ref={setNodeRef} style={containerStyle}>
-        {items.map((id: string) => (
-          <SortableItem key={id} id={id} />
-        ))}
+    <div className='tier'>
+      <div className='tier-name'>
+        <div className='letter'>
+          {id}
+        </div>
       </div>
-    </SortableContext>
+      <div>
+        <h2 className='tier-title'>
+          Tier ({items.length})
+        </h2>
+        <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+
+          <div className='episode-container' ref={setNodeRef} >
+            {items.map((item: Episode, index) => (
+              <SortableItem key={item.id} id={item.id} ComponentRef={props.ComponentRef} data={item} row={props.id}
+                changeTier={(tier) => props.changeTier(tier, item.id, index)}/>
+            ))}
+          </div>
+        </SortableContext>
+      </div>
+    </div>
   );
 }
 
+const MemoContainer = React.memo(Container);
 
-export function Item(props: any) {
-  const { id } = props;
-
-  const style = {
-    width: "100%",
-    height: 50,
-    display: "flex",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid black",
-    margin: "10px 0",
-    background: "white"
-  };
-
-  return <div style={style}>{id} test</div>;
+export interface SortableItemProps {
+  id: string;
+  data: any;
+  row: string;
+  ComponentRef: RenderComponentType;
+  changeTier: (tier: string) => void;
 }
 
-export function SortableItem(props:any) {
+export function SortableItem(props: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -237,14 +252,12 @@ export function SortableItem(props:any) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    flex: "50%",
-    maxWidth: "50%"
+    // transition,
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={props.id} />
+      <props.ComponentRef id={props.id} data={props.data} row={props.row} changeTier={props.changeTier}></props.ComponentRef>
     </div>
   );
 }
