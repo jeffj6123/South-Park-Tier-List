@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { UserContext } from '../user-context';
 
-import { GoogleLogin } from 'react-google-login';
+
 export const refreshTokenSetup = (res) => {
+    localStorage.setItem('authToken', res.tokenId);
+
     // Timing to renew access token
     let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
   
@@ -23,35 +27,60 @@ export const refreshTokenSetup = (res) => {
 const clientId =
   '242188787504-rgmvikkqhmg0uhruc64udgj7q91ltbnp.apps.googleusercontent.com';
 
-function Login() {
-  const onSuccess = (res) => {
-    console.log('Login Success: currentUser:', res.profileObj);
-    alert(
-      `Logged in successfully welcome ${res.profileObj.name} 😍. \n See console for full profile object.`
-    );
-    refreshTokenSetup(res);
-  };
 
-  const onFailure = (res) => {
-    console.log('Login failed: res:', res);
-    alert(
-      `Failed to login. 😢 Please ping this to repo owner twitter.com/sivanesh_fiz`
-    );
-  };
-
-  return (
-    <div>
-      <GoogleLogin
-        clientId={clientId}
-        buttonText="Login"
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-        cookiePolicy={'single_host_origin'}
-        style={{ marginTop: '100px' }}
-        isSignedIn={true}
-      />
-    </div>
-  );
+export interface OnLoginInfo {
+    name: string;
 }
 
-export default Login;
+export interface LoginProps {
+    // onLogin(info: OnLoginInfo): void;
+}
+
+export function Login(props: LoginProps) {
+    const { setUserState } = useContext(UserContext)
+    console.log(setUserState)
+    const onSuccess = (res) => {
+        console.log('Login Success: currentUser:', res);
+        refreshTokenSetup(res);
+        setUserState(res.profileObj.name);
+    };
+
+    const onFailure = (res) => {
+        console.log('Login failed: res:', res);
+    };
+
+    return (
+        <div>
+            <GoogleLogin
+                clientId={clientId}
+                buttonText="Login"
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+                style={{ marginTop: '100px' }}
+                isSignedIn={true}
+            />
+        </div>
+    );
+}
+
+export function Logout(props) {
+    const { setUserState } = useContext(UserContext)
+    console.log(setUserState)
+
+    const onSuccess = () => {
+        console.log('Logout made successfully');
+        console.log(setUserState)
+        setUserState("");
+    };
+
+    return (
+        <div>
+            <GoogleLogout
+                clientId={clientId}
+                buttonText="Logout"
+                onLogoutSuccess={() => onSuccess()}
+            ></GoogleLogout>
+        </div>
+    );
+}
