@@ -3,13 +3,13 @@ import './App.scss';
 import Header from './components/header';
 import { Episode, EpisodeItem, MemoEp } from './components/row';
 import { data } from "./all_episodes";
-import { ranks, rankingMap } from './ranks';
+// import { rankingMap } from './ranks';
 import { Grid } from './components/sortable';
-
+import axios from 'axios';
 const colors = ['#EE324B', '#4D7DBD', '#00B8C4'] //, '#FFE11D'];
 
-function App() {
-  const episodes: Episode[] = data.map(ep => {
+class App extends React.Component<{}, any> {
+  episodes: Episode[] = data.map(ep => {
     const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString();
     return {
       name: ep.name,
@@ -22,30 +22,97 @@ function App() {
     }
   })
 
-  const eposidesMap: any = {};
-
-  episodes.forEach(ep => {
-    const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString()
-    let tier = "u"
-    if (id in rankingMap) {
-      tier = rankingMap[id].tier;
+  constructor(props) {
+    super(props);
+  
+    // const episodesMap: any = {};
+  
+    // this.episodes.forEach(ep => {
+    //   const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString()
+    //   let tier = "u"
+    //   // if (id in rankingMap) {
+    //   //   tier = rankingMap[id].tier;
+    //   // }
+    //   if (!(tier in episodesMap)) {
+    //     episodesMap[tier] = [];
+    //   }
+    //   episodesMap[tier].push(ep);
+    // })
+  
+    this.state = {
+      listOrder: ['s', 'a', 'b', 'c', 'd', 'f', 'u'],
+      episodesMap: {},
+      loading: true
     }
-    if (!(tier in eposidesMap)) {
-      eposidesMap[tier] = [];
+
+    this.saveChanges = this.saveChanges.bind(this);
+
+
+  }
+
+
+  saveChanges(changes: any) {
+    let data = {};
+    
+    Object.keys(changes).forEach(key => {
+      data[key] = changes[key].map(ep => ep.id);
+    })
+
+    console.log(changes)
+    axios.put('http://localhost:8000/api/ranking/4', data).then(res => {
+      console.log("saved")
+    })
+  }
+
+  async componentDidMount() {
+    const res = await axios.get('http://localhost:8000/api/ranking/4');
+    console.log(res)
+    const rankingMap = {};
+    
+    Object.keys(res.data).forEach(tier => {
+      res.data[tier].forEach(id => {
+        rankingMap[id] = tier;
+      })
+    }) 
+
+
+    const episodesMap: any = this.state.listOrder.reduce((map, tier) => {map[tier] = []; return map}, {});
+  
+    this.episodes.forEach(ep => {
+      let tier = "u"
+      if (ep.id in rankingMap) {
+        tier = rankingMap[ep.id];
+      }
+      if (!(tier in episodesMap)) {
+        episodesMap[tier] = [];
+      }
+      episodesMap[tier].push(ep);
+    })
+
+    console.log(episodesMap)
+
+    this.setState({
+      episodesMap,
+      loading: false
+    })
+  }
+
+
+  render() {
+    let grid = (<div>loading list</div>)
+  
+    if(!this.state.loading) {
+      grid = <Grid groups={this.state.episodesMap} RenderComponent={MemoEp} listOrder={this.state.listOrder} orderChange={this.saveChanges}></Grid>
     }
-    eposidesMap[tier].push(ep);
-
-  })
-
-  const listOrder = ['s', 'a', 'b', 'c', 'd', 'f', 'u'];
-
-  return (
-    <div>
-      <Header></Header>
-      <button onClick={() => {console.log("click")}}>click</button>
-      <Grid groups={eposidesMap} RenderComponent={MemoEp} listOrder={listOrder}></Grid>
-    </div>
-  );
+    
+    return (
+      <div>
+        <Header></Header>
+        {grid}
+      </div>
+    );
+      
+  }
 }
 
 export default App;

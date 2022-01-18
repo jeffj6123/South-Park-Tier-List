@@ -1,4 +1,4 @@
-import React, {ComponentClass, FunctionComponent, useState } from "react";
+import React, { ComponentClass, FunctionComponent, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -9,11 +9,19 @@ import {
   DragStartEvent,
   closestCenter
 } from "@dnd-kit/core";
-import { arrayMove, horizontalListSortingStrategy, rectSwappingStrategy, sortableKeyboardCoordinates, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDroppable } from "@dnd-kit/core";
 import { Episode } from "./row";
+
+import 'react-virtualized/styles.css';
+
+// But if you only use a few react-virtualized components,
+// And you're concerned about increasing your application's bundle size,
+// You can directly import only the components you need, like so:
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import List from 'react-virtualized/dist/commonjs/List';
 
 export interface IRenderComponent {
   id: string;
@@ -29,7 +37,7 @@ export interface GridProps {
   listOrder: string[];
   disabled?: boolean;
   RenderComponent: RenderComponentType;
-
+  orderChange: (groups: Record<string, any[]>) => void;
 }
 
 export function Grid(props: GridProps) {
@@ -38,17 +46,20 @@ export function Grid(props: GridProps) {
 
   const ItemMap: Record<string, { row: string, item: any }> = {};
 
+  let itemCount = 0;
+
   Object.keys(items).forEach(key => {
     items[key].forEach(item => {
       ItemMap[item.id] = {
         row: key,
         item: item
       }
+      itemCount += 1
     })
   })
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {activationConstraint: {distance: 10}}),
+    useSensor(PointerSensor, { activationConstraint: { distance: 10 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates
     })
@@ -56,7 +67,8 @@ export function Grid(props: GridProps) {
 
 
   return (
-    <div>
+    <div style={{ width: '95%', marginLeft: '5%', height: 'calc(100vh - 60px)' }}>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -64,37 +76,122 @@ export function Grid(props: GridProps) {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div>
-          {props.listOrder.map((id: string) => (
-            <MemoContainer id={id} items={items[id]} key={id} ComponentRef={props.RenderComponent} 
-            changeTier={(tier, itemId, index) => moveTier(tier, itemId, index, id)}/>
-          ))}
-        </div>
+        <AutoSizer>
+          {({ height, width }) => {
+            const itemsPerRow = Math.floor(width / 230);
 
+            let rowCount = 0;
+            let rowMapper: any[] = [];
+
+            props.listOrder.forEach(key => {
+              let count = 2;
+              if (key in items && items[key].length > 0) {
+                count = Math.ceil(items[key].length / itemsPerRow) + 1;
+              }
+
+              rowMapper.push({
+                tier: key,
+                startRow: rowCount + 1
+              });
+              rowCount += count;
+            })
+
+            rowMapper.reverse();
+
+            return (
+              <List
+                className='List'
+                width={width}
+                height={height}
+                rowCount={rowCount}
+                rowHeight={({ index }) => {
+                  const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);
+                  console.log(tierDisplay)
+                  return tierDisplay ? 155 : 230;
+                }}
+                rowRenderer={
+                  ({ index, key, style }) => {
+
+                    //short circuit to show tier
+                    const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);
+
+                    if (tierDisplay) {
+                      const itemCount = tierDisplay.tier in items ? items[tierDisplay.tier].length : 0;
+                      return (
+                        <div key={tierDisplay.tier}
+                          style={style}>
+                          <div className='tier'>
+                            <div className='tier-name'>
+                              <div className='letter'>
+                                {tierDisplay.tier}
+                              </div>
+                            </div>
+                            <div>
+                              <h2 className='tier-title'>
+                                Tier ({itemCount})
+                              </h2>
+
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    const tier = rowMapper.find(tier => tier.startRow <= index);
+                    const fromIndex = (index - tier.startRow) * itemsPerRow
+
+                    const container = items[tier.tier];
+                    const toIndex = Math.min(fromIndex + itemsPerRow, container.length);
+
+                    const items2: JSX.Element[] = [];
+
+                    for (let i = fromIndex; i < toIndex; i++) {
+                      const item = container[i];
+                      items2.push(
+                        <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier}
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} />)
+                    }
+
+                    return (
+                      <div key={key} style={style} >
+                        <Container id={tier.tier} items={container} >
+                          {items2}
+                        </Container>
+                      </div>
+                    )
+                  }
+                }
+              />
+            )
+          }}
+        </AutoSizer>
         <DragOverlay>{activeId ? <props.RenderComponent id={activeId.id} data={activeId}></props.RenderComponent> : null}</DragOverlay>
       </DndContext>
     </div>
+
   );
 
-  function moveTier(tier: string, id: string, index: number, itemsContainer) {
+  function moveTier(tier: string, id: string, index: number, containerId: string) {
     setItems((prev) => {
       const nextTier = findContainer(tier);
 
       return {
         ...prev,
-        [itemsContainer]: [
-          ...prev[itemsContainer].filter((item) => item.id !== id)
+        [containerId]: [
+          ...prev[containerId].filter((item) => item.id !== id)
         ],
         [nextTier]: [
-          items[itemsContainer][index],
+          items[containerId][index],
           ...prev[nextTier]
         ]
       };
     });
+    props.orderChange(items);
+
   }
 
   function findContainer(id: string) {
-    if(id in items) {
+    if (id in items) {
       return id;
     }
     return ItemMap[id].row;
@@ -188,15 +285,16 @@ export function Grid(props: GridProps) {
     }
 
     setActiveId(null);
+    props.orderChange(items);
   }
 }
 
 export interface ContainerProps {
   id: string;
   items: any[];
-  ComponentRef: RenderComponentType;
-  changeTier: (tier: string, id: string, index: number) => void;
+  children?: React.ReactNode;
 }
+
 
 export function Container(props: ContainerProps) {
   const { id, items } = props;
@@ -205,33 +303,15 @@ export function Container(props: ContainerProps) {
     id
   });
 
-  // console.log("rerender")
   return (
-    <div className='tier'>
-      <div className='tier-name'>
-        <div className='letter'>
-          {id}
-        </div>
+    <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+      <div className='episode-container' ref={setNodeRef} >
+        {props.children}
       </div>
-      <div>
-        <h2 className='tier-title'>
-          Tier ({items.length})
-        </h2>
-        <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
-
-          <div className='episode-container' ref={setNodeRef} >
-            {items.map((item: Episode, index) => (
-              <SortableItem key={item.id} id={item.id} ComponentRef={props.ComponentRef} data={item} row={props.id}
-                changeTier={(tier) => props.changeTier(tier, item.id, index)}/>
-            ))}
-          </div>
-        </SortableContext>
-      </div>
-    </div>
+    </SortableContext>
   );
 }
 
-const MemoContainer = React.memo(Container);
 
 export interface SortableItemProps {
   id: string;
@@ -252,7 +332,7 @@ export function SortableItem(props: SortableItemProps) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    // transition,
+    transition,
   };
 
   return (

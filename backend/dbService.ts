@@ -8,14 +8,14 @@ export class DBService {
 
     async getRanking(id: string): Promise<IRanking[]> {
         try {
-            return await this.readObjectFromFile<IRanking[]>(`${id}.json`);
+            return await this.readObjectFromFile<IRanking[]>(`saves/${id}.json`);
         } catch(e) {
             return [];
         }
     }
 
     async updateRanking(id: string, ranks: IRanking[]) {
-        return this.writeObjectToFile(`${id}.json`, ranks);
+        return this.writeObjectToFile(`saves/${id}.json`, ranks);
     }
 
     private async writeObjectToFile(filename: string, object: any): Promise<any> {

@@ -2,6 +2,7 @@ import express, { Request } from 'express';
 import { env } from 'process';
 import { DBService } from './dbService';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const db = new DBService({});
 
@@ -9,6 +10,7 @@ const app = express();
 const PORT = 8000 || env.port;
 
 app.use(bodyParser.json()) // for parsing application/json
+app.use(cors())
 
 app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) => {
     const { id } = req.params;
@@ -26,7 +28,7 @@ app.put('/api/ranking/:id', async (req: Request, res: express.Response) => {
     console.log(req.body)
     await db.updateRanking(id, req.body);
 
-    res.send(200);
+    res.sendStatus(200);
 });
 
 app.listen(PORT, () => {
