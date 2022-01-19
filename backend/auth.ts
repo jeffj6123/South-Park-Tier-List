@@ -19,7 +19,7 @@ export const authMiddleWare = async (req: Request, res: Response, next: NextFunc
     if(req.headers['authorization']) {
         const info = await verify(req.headers['authorization']);
         res.locals['auth'] = info;
-        console.log(info);
+        // console.log(info);
         next();
     }else{
         res.sendStatus(403);

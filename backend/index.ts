@@ -4,9 +4,11 @@ import { DBService } from './dbService';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { authMiddleWare } from './auth';
+import dotenv from "dotenv"
 
+dotenv.config()
 const db = new DBService({});
-
+console.log(process.env.DATASTORE_EMULATOR_HOST)
 const app = express();
 const PORT = 4444 || env.port;
 
@@ -21,10 +23,10 @@ app.use((req,res,next) => {
 app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
     const user = res.locals['auth'];
     try {
-        const file = await db.getRanking(user.sub);
+        const file = await db.getRankingByUser(user.sub);
         res.json(file);
     } catch (e) {
-        const file = await db.getRanking("empty");
+        const file = await db.getEmptyRanking("empty");
         res.json(file);
     }
 });
@@ -34,9 +36,11 @@ app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) 
     if (!id) {
         res.sendStatus(404)
     } else {
-        res.json(await db.getRanking(id))
+        res.json(await db.getRanking(+id))
     }
 });
+
+
 
 app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Response) => {
     const { id } = req.params;
@@ -44,13 +48,25 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
     const user = res.locals['auth'];
 
     try {
-        await db.updateRanking(user.sub,  req.body);
+        const ranking = await db.getRankingByUser(user.sub);
+
+        if(ranking.user.toString() !== user.sub.toString()) {
+            res.sendStatus(403)
+            return;
+        }
+
+        const data = await db.updateRanking(user.sub,  req.body);
+        console.log(data)
+        console.log(data[0]['mutationResults'])
         res.sendStatus(200);
     } catch (e) {
-            res.sendStatus(500);
-        }
+        const data = await db.createRanking(user.sub,  req.body)
+        console.log(data);
+    }
     });
 
 app.listen(PORT, () => {
     console.log(`[server]: Server is running at https://localhost:${PORT}`);
 });
+
+

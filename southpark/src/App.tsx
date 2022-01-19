@@ -76,8 +76,8 @@ class App extends React.Component<{}, any> {
     console.log(res)
     const rankingMap = {};
 
-    Object.keys(res.data).forEach(tier => {
-      res.data[tier].forEach(id => {
+    Object.keys(res.data.ranks).forEach(tier => {
+      res.data.ranks[tier].forEach(id => {
         rankingMap[id] = tier;
       })
     })

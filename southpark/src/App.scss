@@ -94,11 +94,11 @@ html {
   display: flex;
   align-items: flex-end;
   border-bottom: 2px solid yellow;
-  height: 150px;
+  height: 100px;
 
   .tier-name {
     min-width: 143px;
-    font-size: 160px;
+    font-size: 100px;
     position: relative;
     text-transform: capitalize;
 
@@ -112,7 +112,6 @@ html {
     font-size: 20px;
     text-align: left;
     margin: 0px;
-    margin-bottom: 10px;
     padding-bottom: 5px;
   }
 

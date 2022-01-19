@@ -27,7 +27,8 @@ export interface IRenderComponent {
   id: string;
   data: any;
   row?: string;
-  changeTier?: (tier: string) => void;
+  children?: React.ReactNode;
+  // changeTier?: (tier: string) => void;
 }
 
 type RenderComponentType = FunctionComponent<IRenderComponent> | ComponentClass<IRenderComponent>;
@@ -38,6 +39,7 @@ export interface GridProps {
   disabled?: boolean;
   RenderComponent: RenderComponentType;
   orderChange: (groups: Record<string, any[]>) => void;
+  locked?: boolean;
 }
 
 export function Grid(props: GridProps) {
@@ -75,6 +77,7 @@ export function Grid(props: GridProps) {
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
+        
       >
         <AutoSizer>
           {({ height, width }) => {
@@ -107,7 +110,7 @@ export function Grid(props: GridProps) {
                 rowHeight={({ index }) => {
                   const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);
                   console.log(tierDisplay)
-                  return tierDisplay ? 155 : 230;
+                  return tierDisplay ? 105 : 230;
                 }}
                 rowRenderer={
                   ({ index, key, style }) => {
@@ -149,7 +152,7 @@ export function Grid(props: GridProps) {
                       const item = container[i];
                       items2.push(
                         <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier}
-                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} />)
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false}/>)
                     }
 
                     return (
@@ -319,6 +322,7 @@ export interface SortableItemProps {
   row: string;
   ComponentRef: RenderComponentType;
   changeTier: (tier: string) => void;
+  disabled?: boolean;
 }
 
 export function SortableItem(props: SortableItemProps) {
@@ -328,16 +332,28 @@ export function SortableItem(props: SortableItemProps) {
     setNodeRef,
     transform,
     transition
-  } = useSortable({ id: props.id });
+  } = useSortable({ id: props.id, disabled: props.disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
 
+  let insertedContent;
+
+  if (!props.disabled) {
+    insertedContent = (<div className='quick-tier-container'> {['s', 'a', 'b', 'c', 'd', 'f', 'u'].filter(tier => tier !== props.row).map(tier =>
+      <button className='quick-tier' key={tier} onClick={() => props.changeTier(tier)}>
+        {tier}
+      </button>
+    )} </div>)
+  }
+
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <props.ComponentRef id={props.id} data={props.data} row={props.row} changeTier={props.changeTier}></props.ComponentRef>
+      <props.ComponentRef id={props.id} data={props.data} row={props.row}>
+        {insertedContent}
+      </props.ComponentRef>
     </div>
   );
 }
