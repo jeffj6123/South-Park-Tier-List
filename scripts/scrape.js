@@ -16,27 +16,64 @@ const fileExists = (path) => {
 let get_list = () => {
   const tier = Fs.readFileSync(Path.join(__dirname, 'all_episodes.json'), 'utf8');
   const list = JSON.parse(tier);
-
-  list.map(ep => { return { id: (ep.data.season.toString() + (ep.data.episode < 10 ? '0' : '') + ep.data.episode.toString()), name: ep.data.name.split(" ").join("_") } }).forEach( (ep, i )=> {
+  const descriptsion = [];
+  list.map(ep => { return { id: (ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString()), name: ep.name.split(" ").join("_") } }).forEach( (ep, i )=> {
 
     setTimeout(() => {
       const ep_url = encodeURI(`https://southpark.fandom.com/wiki/${ep.name}`);
 
       try {
-        if (!fileExists(Path.resolve(__dirname, 'images', ep.id + '.png'))) {
-          axios.get(ep_url).then(data => {
-            dom = new JSDOM(data.data);
-            console.log(ep_url, ep.id)
+        axios.get(ep_url).then(data => {
+          dom = new JSDOM(data.data);
+          // console.log(ep_url, ep.id)
 
-            const url = dom.window.document.querySelector('#mw-content-text > div.mw-parser-output > table.infobox.headerscontent > tbody > tr:nth-child(2) > td > a > img').getAttribute('data-src');
-            console.log("downloading " + url)
-            downloadImage(url, ep.id)
+          const d = dom.window.document.getElementById("Synopsis").parentElement.nextElementSibling.textContent.replace("[1]", "") //.innerText
+          // console.log(d);
+          descriptsion.push({
+            id: ep.id,
+            description: d
           })
+          console.log(JSON.stringify({
+            id: ep.id,
+            description: d
+          }))
+          if((i + 1) === tier.length) {
+            console.log(descriptsion);
+          }
+
+          // const url = dom.window.document.querySelector('#mw-content-text > div.mw-parser-output > table.infobox.headerscontent > tbody > tr:nth-child(2) > td > a > img').getAttribute('data-src');
+          // console.log("downloading " + url)
+          // downloadImage(url, ep.id)
+        })
+
+        if (!fileExists(Path.resolve(__dirname, 'images', ep.id + '.png'))) {
+          // axios.get(ep_url).then(data => {
+          //   dom = new JSDOM(data.data);
+          //   console.log(ep_url, ep.id)
+
+          //   const d = dom.window.document.getElementById("Synopsis").parentElement.nextElementSibling.innerText
+
+          //   descriptsion.push({
+          //     id: ep.id,
+          //     description: d
+          //   })
+          //   console.log(JSON.stringify({
+          //     id: ep.id,
+          //     description: d
+          //   }))
+          //   if((i + 1) === tier.length) {
+          //     console.log(descriptsion);
+          //   }
+
+          //   // const url = dom.window.document.querySelector('#mw-content-text > div.mw-parser-output > table.infobox.headerscontent > tbody > tr:nth-child(2) > td > a > img').getAttribute('data-src');
+          //   // console.log("downloading " + url)
+          //   // downloadImage(url, ep.id)
+          // })
         }
       } catch (e) {
         console.log(e)
       }
-    }, i * 1000)
+    }, i * 2000)
 
   })
 }

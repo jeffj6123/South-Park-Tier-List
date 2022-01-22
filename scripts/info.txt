@@ -1,0 +1,28 @@
+{"id":"101","description":"While the boys are waiting for the School Bus, Cartman explains the odd nightmare he had the previous night involving alien visitors.\n"}
+{"id":"110","description":"After being shunned by the others kids, Damien, the Son of Satan, calls upon his father to fight Jesus in the ultimate Pay-Per-View Boxing Match between good and evil.\n"}
+{"id":"111","description":"While Mr. Garrison deserts the class for a visit to Tom's Rhinoplasty, Stan, Kyle, Kenny, and Cartman all compete for the attention of Ms. Ellen, the new substitute teacher.\n"}
+{"id":"112","description":"The boys' discovery of a prehistoric relic spawns a monster that threatens to destroy South Park and the world.\n"}
+{"id":"113","description":"Who is Eric Cartman's father? It could be anyone who attended South Park's 12th Annual Drunken Barn Dance.\n"}
+{"id":"102","description":"When Cartman's environmental essay wins a national contest, America's sweetheart, Kathie Lee Gifford, comes to South Park to present the award.\n"}
+{"id":"103","description":"A weekend trip to experience the finer points of camping, fishing and blowing animals to smithereens is threatened by an erupting volcano.\n"}
+{"id":"104","description":"When Stan discovers his new dog Sparky is gay, he becomes so confused he loses his will to play in the big Homecoming Football game against North Park.\n"}
+{"id":"105","description":"Kyle's mom will not let him keep his new pet, an elephant because it is so huge. So the boys turn to Dr. Mephesto to genetically engineer a smaller elephant.\n"}
+{"id":"106","description":"Grandpa's sole birthday wish is for Stan to take part in his assisted suicide. Meanwhile, Mrs. Broflovski has organized a protest against the boys' favorite TV show, \"Terrance and Phillip\".\n"}
+{"id":"107","description":"A mishap at the morgue transforms the residents of South Park into brain-eating zombies and threatens the boys' night of Trick-or-Treating.\n"}
+{"id":"108","description":"Mistaking Cartman for a starving African child, government authorities send him to Ethiopia where he runs into Sally Struthers.\n"}
+{"id":"109","description":"While South Park Elementary is attempting to stage a non-denominational holiday play that will not offend (or entertain) anyone, Kyle checks himself into the South Park mental asylum.\n"}
+{"id":"1001","description":"Chef  returns to South Park after spending time away with a group called, \"The Super Adventure Club,\" but when his strange behavior starts getting him in trouble, the boys risk everything to save him.\n"}
+{"id":"1010","description":"In his new role as School Hallway Monitor at South Park Elementary, Cartman must team up with Kyle when they discover a teacher having sex with a student.\n"}
+{"id":"1011","description":"Satan is throwing the biggest Halloween costume party ever. Just like a girl getting ready for her sweet sixteen, every detail must be perfect for the prince of darkness. The antics of the most notorious serial killers of all time threaten his fun.\n"}
+{"id":"1012","description":"South Park Elementary faces strong opposition to the topic of evolution. Cartman's too busy to notice as he plans to propel himself into the future on the precise release date of the newest, hottest game console.\n"}
+{"id":"1013","description":"Eric Cartman has frozen himself in an attempt to make his three-week wait for a Nintendo Wii pass quickly. A freak accident landed him over 500 years in the future and now, he's stuck in a Godless world on the brink of war with no Nintendo Wii.\n"}
+{"id":"1014","description":"Stan Marsh has hit rock bottom. He's got no job, no bicycle and his only way out of a bad situation is to coach the local pee wee hockey team.\n"}
+{"id":"1002","description":"Kyle and his family are moving to San Francisco. The only way Stan can get his best friend back is to convince everyone to start driving hybrid cars.\n"}
+{"id":"1003","description":"Cartman and Kyle are at war over the popular cartoon, \"Family Guy\". When the creators of the show announce that they will show the image of a religious symbol, the network threatens to ban the episode. Cartman sees this as his chance to get \"Family Guy\" off the air for good. The two boys embark upon a mad chase across the country and the fate of \"Family Guy\" lies with whichever boy reaches Hollywood first.\n"}
+{"id":"1004","description":"After leaving Kyle injured on the side of the road, Cartman races to the headquarters of \"Family Guy\" determined to put an end to the show once and for all.\n"}
+{"id":"1005","description":"Towelie gets over his drug addiction and writes his memoirs. With Oprah's support, his book becomes a best seller and his story inspires millions to turn their lives around.\n"}
+{"id":"1006","description":"Al Gore warns the school about the threat of ManBearPig.\n"}
+{"id":"1007","description":"When Cartman's mom realizes she can't control her son anymore, she gets help from an expert. The \"Dog Whisperer\" may have what it takes but Eric Cartman's not going down without a fight.\n"}
+{"id":"1008","description":"The boys dedicate their lives to defeating a mad gamer and saving the World of Warcraft.\n"}
+{"id":"1009","description":"The world's biggest conspiracy of all time is finally uncovered when Eric Cartman exposes the true culprit behind the September 11th attacks.\n"}
+{"id":"1101","description":"After Randy Marsh experiences an unfortunate incident on national TV, the \"N\" bomb hits South Park. While Randy seeks forgiveness from Jesse Jackson, South Park Elementary invites a midget by the name of Dr. Nelson to talk about sensitivity.\n"}
