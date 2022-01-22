@@ -9,6 +9,11 @@ import { IUserInfo, UserContext } from './user-context';
 
 const colors = ['#EE324B', '#4D7DBD', '#00B8C4'] //, '#FFE11D'];
 
+export interface IResponse { 
+  ranks: { rank: string, id: string }[],
+  id: string
+}
+
 class App extends React.Component<{}, any> {
   episodes: Episode[] = data.map(ep => {
     const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString();
@@ -55,14 +60,14 @@ class App extends React.Component<{}, any> {
 
 
   saveChanges(changes: any) {
-    let data = {};
+    let data = [];
 
     Object.keys(changes).forEach(key => {
-      data[key] = changes[key].map(ep => ep.id);
+      data = data.concat(changes[key].map(ep => { return { rank: key, id: ep.id } }))
     })
 
+
     const token = localStorage.getItem('authToken') || "";
-    console.log(token)
     axios.put(`/api/ranking`, data, {headers: {'authorization': token}}).then(res => {
       console.log("saved")
     })
@@ -72,14 +77,11 @@ class App extends React.Component<{}, any> {
   async loadRankings() {
     const token = localStorage.getItem('authToken') || "";
 
-    const res = await axios.get('/api/ranking/mine', {headers: {'authorization': token}});
-    console.log(res)
+    const res = await axios.get<IResponse>('/api/ranking/mine', {headers: {'authorization': token}});
     const rankingMap = {};
 
-    Object.keys(res.data.ranks).forEach(tier => {
-      res.data.ranks[tier].forEach(id => {
-        rankingMap[id] = tier;
-      })
+    res.data.ranks.forEach(rank => {
+      rankingMap[rank.id] = rank.rank
     })
 
 
@@ -96,8 +98,6 @@ class App extends React.Component<{}, any> {
       episodesMap[tier].push(ep);
     })
 
-    console.log(episodesMap)
-
     this.setState({
       episodesMap,
       loading: false
@@ -113,7 +113,6 @@ class App extends React.Component<{}, any> {
         listOrder={this.state.listOrder} orderChange={this.saveChanges}></Grid>
     }
 
-    console.log(this)
     return (
       <UserContext.Provider value={this.state.user}>
       <div>

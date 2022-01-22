@@ -1,33 +1,47 @@
 import express, { Request } from 'express';
-import { env } from 'process';
 import { DBService } from './dbService';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { authMiddleWare } from './auth';
 import dotenv from "dotenv"
+import { Datastore } from '@google-cloud/datastore';
+import {Gstore} from 'gstore-node';
 
-dotenv.config()
-const db = new DBService({});
-console.log(process.env.DATASTORE_EMULATOR_HOST)
+if(!process.env.production) {
+    dotenv.config()
+}
+
+const datastore = new Datastore({
+});
+const gstore = new Gstore();
+gstore.connect(datastore);
+
+const db = new DBService(gstore);
+
 const app = express();
-const PORT = 4444 || env.port;
+const PORT = process.env.PORT || 4444;
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(cors())
+app.use(express.static('static'))
 
-app.use((req,res,next) => {
-    console.log(req.url)
-    next();
-})
+if(process.env.development) {
+    app.use((req,res,next) => {
+        console.log(req.url)
+        next();
+    })    
+}
 
 app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
     const user = res.locals['auth'];
     try {
         const file = await db.getRankingByUser(user.sub);
-        res.json(file);
+        res.json(file.entityData);
     } catch (e) {
-        const file = await db.getEmptyRanking("empty");
-        res.json(file);
+        res.json({
+            ranks: [],
+            user: user.sub
+        });
     }
 });
 app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) => {
@@ -49,21 +63,28 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
 
     try {
         const ranking = await db.getRankingByUser(user.sub);
-
+        
         if(ranking.user.toString() !== user.sub.toString()) {
             res.sendStatus(403)
             return;
         }
 
-        const data = await db.updateRanking(user.sub,  req.body);
-        console.log(data)
-        console.log(data[0]['mutationResults'])
+        ranking.ranks = req.body
+        await ranking.save();
+
+        // const data = await db.updateRanking(user.sub,  req.body);
         res.sendStatus(200);
     } catch (e) {
-        const data = await db.createRanking(user.sub,  req.body)
-        console.log(data);
+        console.log(e);
+        res.sendStatus(e);
+        // const data = await db.createRanking(user.sub,  req.body)
+        // console.log(data);
     }
     });
+
+app.get('/*',(req: Request, res: express.Response) => {
+    res.sendFile('static/index.html'); 
+});
 
 app.listen(PORT, () => {
     console.log(`[server]: Server is running at https://localhost:${PORT}`);
