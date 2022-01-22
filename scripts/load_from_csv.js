@@ -2,8 +2,6 @@ const fsP = require('fs/promises')
 
 const parse = async () => {
     const file = await fsP.readFile('./ranks.csv', 'utf8');
-    const tierMap = {};
-
     let currentTier = "";
     let mapping = [];
 
@@ -22,17 +20,23 @@ const parse = async () => {
             const reformattedList = row.map(item => {
                 const split = item.split(".");
 
+                const id = split[0] + (parseInt(split[1]) < 10 ? '0' : '') + split[1];
+
+                
                 return {
-                    season: parseInt(split[0]),
-                    episode: parseInt(split[1]),
-                    tier: currentTier
+                    "entityValue" : {
+                        "properties" : {
+                            "rank" : {
+                                "stringValue": currentTier
+                            },
+                            "id": {
+                                "stringValue": id
+                            }
+                        }
+                    }
                 }
             })
         
-
-            const rowTier = tierMap[currentTier] || [];
-
-            tierMap[currentTier] = rowTier.concat(reformattedList);
             mapping = mapping.concat(reformattedList);
         }
 
@@ -40,7 +44,7 @@ const parse = async () => {
 
     console.log(mapping)
 
-    fsP.writeFile("ranks.json", JSON.stringify(mapping))
+    fsP.writeFile("ranks2.json", JSON.stringify(mapping))
 }
 
 

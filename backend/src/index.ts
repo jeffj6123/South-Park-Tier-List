@@ -1,21 +1,21 @@
 import express, { Request } from 'express';
-import { DBService } from './dbService';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { authMiddleWare } from './auth';
 import dotenv from "dotenv"
 import { Datastore } from '@google-cloud/datastore';
-import {Gstore} from 'gstore-node';
+import {Gstore, instances } from 'gstore-node';
 
 if(!process.env.production) {
     dotenv.config()
 }
 
-const datastore = new Datastore({
-});
+const datastore = new Datastore();
 const gstore = new Gstore();
 gstore.connect(datastore);
+instances.set('unique-id', gstore);
 
+import { DBService } from './dbService';
 const db = new DBService(gstore);
 
 const app = express();
@@ -38,6 +38,7 @@ app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: e
         const file = await db.getRankingByUser(user.sub);
         res.json(file.entityData);
     } catch (e) {
+        console.log(e)
         res.json({
             ranks: [],
             user: user.sub
@@ -63,7 +64,7 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
 
     try {
         const ranking = await db.getRankingByUser(user.sub);
-        
+        console.log(ranking.entityData )
         if(ranking.user.toString() !== user.sub.toString()) {
             res.sendStatus(403)
             return;
@@ -76,9 +77,9 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
         res.sendStatus(200);
     } catch (e) {
         console.log(e);
+        const data = await db.createRanking(user.sub,  req.body)
+        console.log(data);
         res.sendStatus(e);
-        // const data = await db.createRanking(user.sub,  req.body)
-        // console.log(data);
     }
     });
 
