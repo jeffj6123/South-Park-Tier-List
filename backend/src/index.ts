@@ -12,7 +12,6 @@ if(!process.env.production) {
 }
 
 const datastore = new Datastore({
-    projectId: 'my-google-project-id',
 });
 const gstore = new Gstore();
 gstore.connect(datastore);
@@ -76,8 +75,10 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
         // const data = await db.updateRanking(user.sub,  req.body);
         res.sendStatus(200);
     } catch (e) {
-        const data = await db.createRanking(user.sub,  req.body)
-        console.log(data);
+        console.log(e);
+        res.sendStatus(e);
+        // const data = await db.createRanking(user.sub,  req.body)
+        // console.log(data);
     }
     });
 
