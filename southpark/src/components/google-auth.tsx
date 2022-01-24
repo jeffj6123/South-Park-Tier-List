@@ -37,17 +37,33 @@ export interface LoginProps {
 }
 
 export function Login(props: LoginProps) {
-    const { setUserState } = useContext(UserContext)
-    console.log(setUserState)
+    const { loggedIn, setUserState } = useContext(UserContext)
+
+    // console.log(setUserState)
+
     const onSuccess = (res) => {
-        console.log('Login Success: currentUser:', res);
         refreshTokenSetup(res);
         setUserState(res.profileObj.name);
     };
 
+    const onLogOut = () => {
+        console.log('Logout made successfully');
+        setUserState("");
+    }
+
     const onFailure = (res) => {
         console.log('Login failed: res:', res);
     };
+
+    if(loggedIn) {
+        return (<div>
+            <GoogleLogout
+                clientId={clientId}
+                buttonText="Logout"
+                onLogoutSuccess={onLogOut}
+            ></GoogleLogout>
+        </div>)
+    }
 
     return (
         <div>
@@ -60,27 +76,6 @@ export function Login(props: LoginProps) {
                 style={{ marginTop: '100px' }}
                 isSignedIn={true}
             />
-        </div>
-    );
-}
-
-export function Logout(props) {
-    const { setUserState } = useContext(UserContext)
-    console.log(setUserState)
-
-    const onSuccess = () => {
-        console.log('Logout made successfully');
-        console.log(setUserState)
-        setUserState("");
-    };
-
-    return (
-        <div>
-            <GoogleLogout
-                clientId={clientId}
-                buttonText="Logout"
-                onLogoutSuccess={() => onSuccess()}
-            ></GoogleLogout>
         </div>
     );
 }

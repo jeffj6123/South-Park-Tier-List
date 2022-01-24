@@ -1,8 +1,15 @@
 import React from 'react';
 import { IRenderComponent } from './sortable';
+
+export interface Character {
+    name: string;
+}
 export interface Episode {
     name: string;
     episode: number;
+
+    description: string;
+    characters: Character[];
 
     releaseDate: string;
     season: number;
@@ -23,16 +30,34 @@ export interface EpisodeItemProps extends IRenderComponent {
     children?: React.ReactNode;
 }
 
-export const EpisodeItem = ({ data, children }: EpisodeItemProps) => {
-
-    return (<div className='episode background-one rounded' style={{ 'backgroundColor': data.backgroundColor }}>
-        <div style={{'width': '100%', 'height': '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: -1}}></div>
-        <div className='thumbnail-container'>
-            <img className='rounded' src={data.thumbnail}></img>
+export const EpisodeItem = ({ data, children, dragging, last }: EpisodeItemProps) => {
+    return (<div className={`episode ${ !dragging ? 'hover-info' : ''}`}>
+        <div  className={`rounded inner ${last ? 'open-left' : ''}`}>
+            <div className={`additional-info `}>
+                <div style={{'overflow': 'auto', height: '100%'}}>
+                    <div>
+                        <h2>
+                            Summary
+                        </h2>
+                        {data.description}
+                    </div>
+                <div>
+                    <h2> Characters</h2>
+                    <ul className='character-list'>
+                        {data.characters.map(char => (<li key={char.name}>
+                            {char.name}
+                        </li>))}
+                    </ul>
+                </div>
+                </div>
+            </div>
+            <div className='thumbnail-container'>
+                <img className='rounded' src={data.thumbnail}></img>
+            </div>
+            <div style={{ 'fontSize': '15px' }}>
+                <div>S{data.season} E{data.episode} </div> {data.name}</div>
+            {children}
         </div>
-        <div style={{ 'fontSize': '15px' }}>
-            <div>S{data.season} E{data.episode} </div> {data.name}</div>
-        {children}
     </div>)
 }
 

@@ -28,6 +28,8 @@ export interface IRenderComponent {
   data: any;
   row?: string;
   children?: React.ReactNode;
+  dragging?: boolean | undefined;
+  last?: boolean;
   // changeTier?: (tier: string) => void;
 }
 
@@ -69,7 +71,7 @@ export function Grid(props: GridProps) {
 
 
   return (
-    <div style={{ width: '95%', marginLeft: '5%', height: 'calc(100vh - 60px)' }}>
+    <div style={{ height: 'calc(100vh - 60px)' }}>
 
       <DndContext
         sensors={sensors}
@@ -109,7 +111,6 @@ export function Grid(props: GridProps) {
                 rowCount={rowCount}
                 rowHeight={({ index }) => {
                   const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);
-                  console.log(tierDisplay)
                   return tierDisplay ? 105 : 230;
                 }}
                 rowRenderer={
@@ -146,13 +147,16 @@ export function Grid(props: GridProps) {
                     const container = items[tier.tier];
                     const toIndex = Math.min(fromIndex + itemsPerRow, container.length);
 
+                    const lessItemsThenMax = (toIndex - fromIndex ) < itemsPerRow;
+                    
                     const items2: JSX.Element[] = [];
 
                     for (let i = fromIndex; i < toIndex; i++) {
                       const item = container[i];
+                      // console.log(item.id, activeId, item.id === activeId)
                       items2.push(
-                        <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier}
-                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false}/>)
+                        <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier} selected={item.id === activeId?.id}
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false} last={(i + 1) === toIndex && !lessItemsThenMax}/>)
                     }
 
                     return (
@@ -168,7 +172,7 @@ export function Grid(props: GridProps) {
             )
           }}
         </AutoSizer>
-        <DragOverlay>{activeId ? <props.RenderComponent id={activeId.id} data={activeId}></props.RenderComponent> : null}</DragOverlay>
+        <DragOverlay>{activeId ? <props.RenderComponent id={activeId.id} data={activeId} dragging={true}></props.RenderComponent> : null}</DragOverlay>
       </DndContext>
     </div>
 
@@ -308,8 +312,10 @@ export function Container(props: ContainerProps) {
 
   return (
     <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+      <div className="row-container">
       <div className='episode-container' ref={setNodeRef} >
         {props.children}
+      </div>
       </div>
     </SortableContext>
   );
@@ -323,6 +329,8 @@ export interface SortableItemProps {
   ComponentRef: RenderComponentType;
   changeTier: (tier: string) => void;
   disabled?: boolean;
+  last?: boolean;
+  selected?: boolean;
 }
 
 export function SortableItem(props: SortableItemProps) {
@@ -349,9 +357,15 @@ export function SortableItem(props: SortableItemProps) {
     )} </div>)
   }
 
+  if(props.selected) {
+    return (<div  ref={setNodeRef} style={{border: '2px solid gray', width: 220, ...style}} {...attributes} {...listeners} className="row-item">
+
+    </div>)
+  }
+
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <props.ComponentRef id={props.id} data={props.data} row={props.row}>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="row-item">
+      <props.ComponentRef id={props.id} data={props.data} row={props.row} last={props.last}>
         {insertedContent}
       </props.ComponentRef>
     </div>

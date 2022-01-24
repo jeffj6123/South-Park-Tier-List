@@ -20,12 +20,12 @@ let get_list = () => {
   list.map(ep => { return { id: (ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString()), name: ep.name.split(" ").join("_") } }).forEach( (ep, i )=> {
 
     setTimeout(() => {
-      const ep_url = encodeURI(`https://southpark.fandom.com/wiki/${ep.name}`);
+      const ep_url = encodeURI(`https://southpark.fandom.com/wiki/${ep.name}`).replace("?", "%3F").replace(/!/g, "");
 
       try {
         axios.get(ep_url).then(data => {
           dom = new JSDOM(data.data);
-          // console.log(ep_url, ep.id)
+          // console.log(ep_url)
 
           const d = dom.window.document.getElementById("Synopsis").parentElement.nextElementSibling.textContent.replace("[1]", "") //.innerText
           // console.log(d);
@@ -33,17 +33,21 @@ let get_list = () => {
             id: ep.id,
             description: d
           })
-          console.log(JSON.stringify({
-            id: ep.id,
-            description: d
-          }))
-          if((i + 1) === tier.length) {
+          // console.log(JSON.stringify({
+          //   id: ep.id,
+          //   description: d
+          // }))
+          if((i + 1) === list.length) {
+            Fs.writeFileSync("all_descris.json", JSON.stringify(descriptsion))
             console.log(descriptsion);
           }
 
           // const url = dom.window.document.querySelector('#mw-content-text > div.mw-parser-output > table.infobox.headerscontent > tbody > tr:nth-child(2) > td > a > img').getAttribute('data-src');
           // console.log("downloading " + url)
           // downloadImage(url, ep.id)
+        },
+        err => {
+          console.log(ep_url)
         })
 
         if (!fileExists(Path.resolve(__dirname, 'images', ep.id + '.png'))) {
@@ -71,9 +75,10 @@ let get_list = () => {
           // })
         }
       } catch (e) {
-        console.log(e)
+        console.log(ep_url)
+        // console.log(e)
       }
-    }, i * 2000)
+    }, i * 500)
 
   })
 }

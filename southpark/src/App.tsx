@@ -16,15 +16,17 @@ export interface IResponse {
 
 class App extends React.Component<{}, any> {
   episodes: Episode[] = data.map(ep => {
-    const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString();
+    // const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString();
     return {
       name: ep.name,
       releaseDate: ep.air_date,
       episode: ep.episode,
       season: ep.season,
-      backgroundColor: colors[Math.round(Math.random() * colors.length)],
-      thumbnail: 'images/' + id + '.png',
-      id
+      backgroundColor: colors[0],
+      thumbnail: 'images/' + ep.id + '.png',
+      id: ep.id,
+      description: ep.description,
+      characters: ep.characters
     }
   })
 
@@ -106,7 +108,7 @@ class App extends React.Component<{}, any> {
 
 
   render() {
-    let grid = (<div>loading list</div>)
+    let grid = (<div>Login to start</div>)
 
     if (!this.state.loading) {
       grid = <Grid groups={this.state.episodesMap} RenderComponent={MemoEp}

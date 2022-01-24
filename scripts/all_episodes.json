@@ -651,7 +651,7 @@
     },
     {
         "id": 163,
-        "name": "Imaginationland Episode I",
+        "name": "Imaginationland",
         "season": 11,
         "episode": 10,
         "air_date": "2007-10-17",
@@ -662,7 +662,7 @@
     },
     {
         "id": 164,
-        "name": "Imaginationland, Episode II",
+        "name": "Imaginationland,_Episode_II",
         "season": 11,
         "episode": 11,
         "air_date": "2007-10-24",
@@ -673,7 +673,7 @@
     },
     {
         "id": 165,
-        "name": "Imaginationland, Episode III",
+        "name": "Imaginationland,_Episode_III",
         "season": 11,
         "episode": 12,
         "air_date": "2007-10-31",
@@ -3326,7 +3326,7 @@
     },
     {
         "id": 300,
-        "name": "Shots!!!",
+        "name": "Shots",
         "season": 23,
         "episode": 3,
         "air_date": "2019-10-09",
