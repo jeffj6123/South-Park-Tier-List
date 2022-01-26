@@ -14,7 +14,6 @@ export interface Episode {
     releaseDate: string;
     season: number;
 
-    backgroundColor: string;
     thumbnail: string;
 
     id: string;

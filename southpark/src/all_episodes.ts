@@ -1,3 +1,34 @@
+import { Episode } from "./components/row"
+
+export interface IRankResponse {
+    ranks: { rank: string, id: string }[],
+    id: string
+}
+
+export const parseUserRanks = (ranks: IRankResponse, rankOptions: string[]) => {
+    const rankingMap = {};
+
+    ranks.ranks.forEach(rank => {
+      rankingMap[rank.id] = rank.rank
+    })
+
+
+    const episodesMap: Record<string, Episode[]> = rankOptions.reduce((map, tier) => { map[tier] = []; return map }, {});
+
+    episodes.forEach(ep => {
+      let tier = "u"
+      if (ep.id in rankingMap) {
+        tier = rankingMap[ep.id];
+      }
+      if (!(tier in episodesMap)) {
+        episodesMap[tier] = [];
+      }
+      episodesMap[tier].push(ep);
+    })
+
+    return episodesMap;
+}
+
 export const data = [
     {
         "id": "101",
@@ -10490,3 +10521,17 @@ export const data = [
         "description": "Butters must fake his death, dress up as a girl and infiltrate a slumber party, in order to retrieve a future telling device Cartman is convinced the girls have.\n"
     }
 ]
+
+
+export const episodes: Episode[] = data.map(ep => {
+    return {
+      name: ep.name,
+      releaseDate: ep.air_date,
+      episode: ep.episode,
+      season: ep.season,
+      thumbnail: 'images/' + ep.id + '.png',
+      id: ep.id,
+      description: ep.description,
+      characters: ep.characters
+    }
+  })
