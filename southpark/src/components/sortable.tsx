@@ -40,7 +40,7 @@ export interface GridProps {
   listOrder: string[];
   disabled?: boolean;
   RenderComponent: RenderComponentType;
-  orderChange: (groups: Record<string, any[]>) => void;
+  orderChange?: (groups: Record<string, any[]>) => void;
   locked?: boolean;
 }
 
