@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { MemoEp } from "../components/row";
 import { Grid } from "../components/sortable";
 
-export class ViewEpisodeList extends React.Component<{}, any> {
-    constructor(props) {
-        super(props);
+export function ViewEpisodeList() {
+    let { id } = useParams();
+    const [state, setState] = useState({
+        loading: true,
+        episodesMap: {},
+        listOrder: []
+    });
 
-        let { id } = useParams();
+
+    let grid = (<div>Loading tier list</div>)
+
+    if (!state.loading) {
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
+            listOrder={state.listOrder} disabled={true}></Grid>
     }
 
-    render() {
-        let grid = (<div>Loading tier list</div>)
 
-    if (!this.state.loading) {
-      grid = <Grid groups={this.state.episodesMap} RenderComponent={MemoEp}
-        listOrder={this.state.listOrder} disabled={true}></Grid>
-    }
-
-    
-    return ({grid})
-    }
+    return (<div>
+        {grid}
+    </div>)
 }

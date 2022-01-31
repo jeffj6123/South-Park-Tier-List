@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react';
 import { IRankResponse, parseUserRanks } from "../all_episodes";
 import { Episode } from '../components/row';
 
@@ -40,7 +41,7 @@ export class HttpService {
 
         const token = localStorage.getItem('authToken') || "";
     
-        const res = await axios.get<IRankResponse>(`/api/ranking${id}`, {headers: {'authorization': token}});
+        const res = await axios.get<IRankResponse>(`/api/ranking/${id}`, {headers: {'authorization': token}});
 
         const parsed = parseUserRanks(res.data, ['s','a','b','c','d','f']);
 
@@ -48,4 +49,11 @@ export class HttpService {
 
         return parsed;
       }
+
+    getTierList(): string[] {
+        return  ['s', 'a', 'b', 'c', 'd', 'f', 'u'];
+    }
 } 
+
+
+export const httpServiceContext = React.createContext<HttpService>(new HttpService());

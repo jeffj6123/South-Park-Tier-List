@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../user-context';
+import { DropDown } from './dropdown';
 import { Login } from './google-auth';
 
 export const Header = () => {
@@ -8,7 +9,11 @@ export const Header = () => {
         <h1>
             South Park Tier List
         </h1>
-        <div className='auth-login'>{name} <Login></Login></div>
+        <div style={{'marginRight': 10 
+    }}>
+            <DropDown></DropDown>
+        </div>
+        {/* <div className='auth-login'>{name} <Login></Login></div> */}
     </div>)
 }
 

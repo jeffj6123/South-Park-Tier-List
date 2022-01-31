@@ -64,7 +64,6 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
 
     try {
         const ranking = await db.getRankingByUser(user.sub);
-        console.log(ranking.entityData )
         if(ranking.user.toString() !== user.sub.toString()) {
             res.sendStatus(403)
             return;
@@ -78,7 +77,6 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
     } catch (e) {
         console.log(e);
         const data = await db.createRanking(user.sub,  req.body)
-        console.log(data);
         res.sendStatus(e);
     }
     });

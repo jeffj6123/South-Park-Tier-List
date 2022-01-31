@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { MemoEp } from "../components/row";
 import { Grid } from "../components/sortable";
+import { httpServiceContext } from "../services/http.service";
 
-export class EditEpisodeList extends React.Component<{}, any> {
-    constructor(props) {
-        super(props);
+export function EditEpisodeList() {
+    const httpService = useContext(httpServiceContext);
+    const [state, setState] = useState<any>({
+        loading: true,
+        episodesMap: null,
+        listOrder: []
+    });
 
-        this.saveChanges = this.saveChanges.bind(this);
+    if(!state.episodesMap) {
+        httpService.loadTiers().then(tier => {
+            setState({
+                loading: false,
+                episodesMap: tier,
+                listOrder: httpService.getTierList()
+            })
+        })
     }
 
-    saveChanges(changes: any) {
 
+    const saveChanges = (changes: any) => {
+        httpService.saveTierList(changes);
     }
 
-    render() {
-        let grid = (<div>Login to start</div>)
+    let grid = (<div>Login to start</div>)
 
-    if (!this.state.loading) {
-      grid = <Grid groups={this.state.episodesMap} RenderComponent={MemoEp}
-        listOrder={this.state.listOrder} orderChange={this.saveChanges}></Grid>
+    if (!state.loading) {
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
+            listOrder={state.listOrder} orderChange={saveChanges}></Grid>
     }
 
-    
-    return ({grid})
-    }
+
+    return (<div>
+        {grid}
+    </div>)
 }

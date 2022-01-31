@@ -79,3 +79,20 @@ export function Login(props: LoginProps) {
         </div>
     );
 }
+
+export function LogOut() {
+    const { loggedIn, setUserState } = useContext(UserContext)
+
+    const onLogOut = () => {
+        console.log('Logout made successfully');
+        setUserState("");
+    }
+
+    return (<div>
+        <GoogleLogout
+            clientId={clientId}
+            buttonText="Logout"
+            onLogoutSuccess={onLogOut}
+        ></GoogleLogout>
+    </div>)
+}

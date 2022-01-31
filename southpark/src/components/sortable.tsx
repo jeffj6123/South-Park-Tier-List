@@ -193,8 +193,10 @@ export function Grid(props: GridProps) {
         ]
       };
     });
-    props.orderChange(items);
-
+    
+    if(props.orderChange) {
+      props.orderChange(items);
+    }
   }
 
   function findContainer(id: string) {
@@ -292,7 +294,10 @@ export function Grid(props: GridProps) {
     }
 
     setActiveId(null);
-    props.orderChange(items);
+    
+    if(props.orderChange) {
+      props.orderChange(items);
+    }
   }
 }
 
