@@ -17,10 +17,15 @@ async function verify(token) {
 
 export const authMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
     if(req.headers['authorization']) {
-        const info = await verify(req.headers['authorization']);
-        res.locals['auth'] = info;
-        // console.log(info);
-        next();
+        try {
+            const info = await verify(req.headers['authorization']);
+            res.locals['auth'] = info;
+            // console.log(info);
+            next();            
+        } catch(e) {
+            console.log(e);
+        }
+
     }else{
         res.sendStatus(403);
     }

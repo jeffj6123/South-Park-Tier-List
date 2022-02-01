@@ -4,7 +4,7 @@
     border: 0px;
     transition: .25s box-shadow, opacity;
     box-shadow: none;
-
+    cursor: pointer;
     :hover {
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         opacity: .9;

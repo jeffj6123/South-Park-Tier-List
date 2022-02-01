@@ -42,28 +42,14 @@ export function Login(props: LoginProps) {
     // console.log(setUserState)
 
     const onSuccess = (res) => {
+        console.log(res)
         refreshTokenSetup(res);
         setUserState(res.profileObj.name);
     };
 
-    const onLogOut = () => {
-        console.log('Logout made successfully');
-        setUserState("");
-    }
-
     const onFailure = (res) => {
         console.log('Login failed: res:', res);
     };
-
-    if(loggedIn) {
-        return (<div>
-            <GoogleLogout
-                clientId={clientId}
-                buttonText="Logout"
-                onLogoutSuccess={onLogOut}
-            ></GoogleLogout>
-        </div>)
-    }
 
     return (
         <div>
@@ -80,12 +66,14 @@ export function Login(props: LoginProps) {
     );
 }
 
-export function LogOut() {
-    const { loggedIn, setUserState } = useContext(UserContext)
+export function LogOut(props) {
+    const stuff = useContext(UserContext)
 
+    // const test = setUserState;
+    console.log(stuff)
     const onLogOut = () => {
-        console.log('Logout made successfully');
-        setUserState("");
+        // console.log(setUserState);
+        // setUserState("");
     }
 
     return (<div>

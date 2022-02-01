@@ -22,7 +22,8 @@ class App extends React.Component<{}, any> {
       this.setState(state => ({
         user: {
           loggedIn: user.length > 0,
-          name: user
+          name: user,
+          setUserState
         }
       })
       )

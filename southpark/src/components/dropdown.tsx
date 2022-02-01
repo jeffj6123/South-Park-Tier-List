@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import { LogOut } from "./google-auth";
 
 export function DropDown() {
     const [state, setState] = useState(false);
 
     let dropdown: any = "";
-    if (true || state) {
+    if (state) {
         dropdown = (<div className="dropdown-content">
             <div className="user-dropdown rounded">
                 <ul>
-                    <li>My Episode Ranks</li>
+                    <li onClick={(e) => e.stopPropagation()}><Link to={'mine'}> My Episode Ranks</Link></li>
                     <li>My Character Ranks</li>
                     <li>
                         <div style={{margin:'auto'}}>
@@ -22,8 +23,9 @@ export function DropDown() {
     }
 
     return (
-        <div className="dropdown-container" onBlur={() => { setState(false) }}>
-            <button className="simple-button" onClick={() => { setState(!state) }}>Jeff Jarry</button>
+        // onBlur={() => { setState(false) }}
+        <div className="dropdown-container" >
+            <button className="simple-button user-info-button" onClick={() => { setState(!state) }}>Jeff Jarry</button>
             {dropdown}
         </div>
     )
