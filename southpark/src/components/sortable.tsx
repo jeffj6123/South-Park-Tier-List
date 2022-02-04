@@ -46,11 +46,20 @@ export interface GridProps {
 
 export function Grid(props: GridProps) {
   const [items, setItems] = useState(props.groups);
-  const [activeId, setActiveId] = useState<Episode | null>(null);
-
+  const [activeId, setActiveId, ] = useState<Episode | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleTiers, setVisibleTiers] = useState([]);
   const ItemMap: Record<string, { row: string, item: any }> = {};
 
   let itemCount = 0;
+
+  let lastCalculatedRows = [];
+
+  const navigateToTier = (tier: string) => {
+    const tierInfo = lastCalculatedRows.find(row => row.tier === tier);
+    setCurrentIndex(tierInfo.startRow - 1)
+  } 
+
 
   Object.keys(items).forEach(key => {
     items[key].forEach(item => {
@@ -69,17 +78,23 @@ export function Grid(props: GridProps) {
     })
   );
 
-
   return (
-    <div style={{ height: 'calc(100vh - 60px)' }}>
-
+    <div className="tier-list-wrapper">
+      <div className="tier-navigation">
+        {props.listOrder.map( (tier, index) => (
+          <div key={tier} className="tier-nav-tab">
+            <span className={`tier-nav-letter ${visibleTiers.some(visibleTier => visibleTier.tier === tier) ? 'in-view' : ''}`} onClick={() => navigateToTier(tier)}>{tier}</span>
+            { index < (props.listOrder.length -1 ) && <span className="tier-nav-spacer">/</span>}
+          </div>))}
+      </div>
+      <div className="tier-list">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
-        
+
       >
         <AutoSizer>
           {({ height, width }) => {
@@ -103,12 +118,19 @@ export function Grid(props: GridProps) {
 
             rowMapper.reverse();
 
+            lastCalculatedRows = rowMapper;
+
             return (
               <List
                 className='List'
                 width={width}
                 height={height}
                 rowCount={rowCount}
+                scrollToIndex={currentIndex}
+                scrollToAlignment={'start'}
+                onRowsRendered={(data) => {
+                  setVisibleTiers(lastCalculatedRows.filter(tier => tier.startRow > data.startIndex && tier.startRow <= data.stopIndex));
+                }}
                 rowHeight={({ index }) => {
                   const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);
                   return tierDisplay ? 105 : 230;
@@ -147,16 +169,15 @@ export function Grid(props: GridProps) {
                     const container = items[tier.tier];
                     const toIndex = Math.min(fromIndex + itemsPerRow, container.length);
 
-                    const lessItemsThenMax = (toIndex - fromIndex ) < itemsPerRow;
-                    
+                    const lessItemsThenMax = (toIndex - fromIndex) < itemsPerRow;
+
                     const items2: JSX.Element[] = [];
 
                     for (let i = fromIndex; i < toIndex; i++) {
                       const item = container[i];
-                      // console.log(item.id, activeId, item.id === activeId)
                       items2.push(
                         <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier} selected={item.id === activeId?.id}
-                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false} last={(i + 1) === toIndex && !lessItemsThenMax}/>)
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false} last={(i + 1) === toIndex && !lessItemsThenMax} />)
                     }
 
                     return (
@@ -174,6 +195,7 @@ export function Grid(props: GridProps) {
         </AutoSizer>
         <DragOverlay>{activeId ? <props.RenderComponent id={activeId.id} data={activeId} dragging={true}></props.RenderComponent> : null}</DragOverlay>
       </DndContext>
+      </div>
     </div>
 
   );
@@ -193,8 +215,8 @@ export function Grid(props: GridProps) {
         ]
       };
     });
-    
-    if(props.orderChange) {
+
+    if (props.orderChange) {
       props.orderChange(items);
     }
   }
@@ -294,8 +316,8 @@ export function Grid(props: GridProps) {
     }
 
     setActiveId(null);
-    
-    if(props.orderChange) {
+
+    if (props.orderChange) {
       props.orderChange(items);
     }
   }
@@ -318,9 +340,9 @@ export function Container(props: ContainerProps) {
   return (
     <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
       <div className="row-container">
-      <div className='episode-container' ref={setNodeRef} >
-        {props.children}
-      </div>
+        <div className='episode-container' ref={setNodeRef} >
+          {props.children}
+        </div>
       </div>
     </SortableContext>
   );
@@ -362,8 +384,8 @@ export function SortableItem(props: SortableItemProps) {
     )} </div>)
   }
 
-  if(props.selected) {
-    return (<div  ref={setNodeRef} style={{border: '2px solid gray', width: 220, ...style}} {...attributes} {...listeners} className="row-item">
+  if (props.selected) {
+    return (<div ref={setNodeRef} style={{ border: '2px solid gray', width: 220, ...style }} {...attributes} {...listeners} className="row-item">
 
     </div>)
   }

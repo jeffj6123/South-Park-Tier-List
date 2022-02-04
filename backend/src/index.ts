@@ -23,14 +23,14 @@ const PORT = process.env.PORT || 4444;
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(cors())
-app.use(express.static('static'))
+// if(process.env.development) {
+app.use((req,res,next) => {
+    console.log(req.url)
+    next();
+})    
+// }
 
-if(process.env.development) {
-    app.use((req,res,next) => {
-        console.log(req.url)
-        next();
-    })    
-}
+// app.use(express.static('static'))
 
 app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
     const user = res.locals['auth'];
@@ -51,7 +51,8 @@ app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) 
     if (!id) {
         res.sendStatus(404)
     } else {
-        res.json(await db.getRanking(+id))
+        const entity = await db.getRanking(+id);
+        res.json(entity.entityData)
     }
 });
 
@@ -82,7 +83,13 @@ app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Respon
     });
 
 app.get('/*',(req: Request, res: express.Response) => {
-    res.sendFile('static/index.html'); 
+    console.log(req.url)
+
+    try {
+        res.sendFile('static/index.html'); 
+    }catch(e) {
+        res.sendStatus(404)
+    }
 });
 
 app.listen(PORT, () => {

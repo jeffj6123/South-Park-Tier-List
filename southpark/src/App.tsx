@@ -1,16 +1,13 @@
-import React, { createContext } from 'react';
+import React from 'react';
+import 'remixicon/fonts/remixicon.css';
 import './App.scss';
 import Header from './components/header';
-import axios from 'axios';
 import { IUserInfo, UserContext } from './user-context';
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { ViewEpisodeList } from './views/view-episode-tier-list';
 import { Landing } from './views/landing';
 import { EditEpisodeList } from './views/edit-episode-tier-list';
 import { HttpService, httpServiceContext } from './services/http.service';
-
-const colors = ['#EE324B', '#4D7DBD', '#00B8C4'] //, '#FFE11D'];
-
 
 class App extends React.Component<{}, any> {
   private httpService: HttpService = new HttpService();
@@ -20,19 +17,18 @@ class App extends React.Component<{}, any> {
 
     const setUserState = (user: string) => {
       this.setState(state => ({
+        ...state,
         user: {
+          ...state.user,
           loggedIn: user.length > 0,
           name: user,
-          setUserState
         }
       })
       )
-
-      // this.loadRankings();
     }
 
     this.state = {
-      listOrder: ['s', 'a', 'b', 'c', 'd', 'f', 'u'],
+      listOrder: this.httpService.getTierList(),
       episodesMap: {},
       loading: true,
       user: {
@@ -51,8 +47,8 @@ class App extends React.Component<{}, any> {
           <div>
             <Header></Header>
             <Routes>
-              <Route path="/mine" element={<EditEpisodeList />} />
-              <Route path="/:id" element={<ViewEpisodeList />} />
+              <Route path="/episodes/mine" element={<EditEpisodeList/> } />
+              <Route path="/episodes/:id" element={<ViewEpisodeList/>} />
               <Route path="/*" element={<Landing />} />
               {/* <Route path="about" element={<About />} /> */}
             </Routes>

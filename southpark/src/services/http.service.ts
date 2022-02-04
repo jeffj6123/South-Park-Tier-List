@@ -17,10 +17,6 @@ export interface IRankCollection {
 export class HttpService {
     private cachedCollections: Record<string, Record<string, Episode[]>> = {};
 
-    constructor() {
-
-    }
-
     async saveTierList(changes: Record<string, Episode[]>) {
         let data: IRank[] = [];
     
@@ -39,9 +35,14 @@ export class HttpService {
             return this.cachedCollections[id];
         }
 
-        const token = localStorage.getItem('authToken') || "";
+        let config = {};
+
+        if(id === "mine") {
+            const token = localStorage.getItem('authToken') || "";
+            config = {headers: {'authorization': token}};
+        }
     
-        const res = await axios.get<IRankResponse>(`/api/ranking/${id}`, {headers: {'authorization': token}});
+        const res = await axios.get<IRankResponse>(`/api/ranking/${id}`, config);
 
         const parsed = parseUserRanks(res.data, ['s','a','b','c','d','f']);
 

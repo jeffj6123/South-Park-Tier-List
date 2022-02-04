@@ -1,10 +1,14 @@
 @use 'styles/dropdown';
 @use 'styles/button';
+@use 'styles/landing';
+@use 'styles/tier';
+
 :root {
   --main-bg-color: #282c34;
   --primary-color: #38bac1;
   --accent-color: #e51943;
   --primary-font-color: white;
+  --tertiary-color: yellow;
 }
 
 html {
@@ -33,7 +37,7 @@ a {
 }
 
 a:hover {
-  border-bottom: 1px solid yellow;
+  border-bottom: 1px solid var(--tertiary-color);
   cursor:pointer;  
 }
 
@@ -126,7 +130,7 @@ a:hover {
 .tier {
   display: flex;
   align-items: flex-end;
-  border-bottom: 2px solid yellow;
+  border-bottom: 2px solid var(--tertiary-color);
   height: 100px;
   margin: 0px 5%;
 
@@ -192,43 +196,4 @@ a:hover {
 
 .row-item {
   flex: 1;
-}
-
-
-.user-dropdown {
-  background-color: transparent;
-  color: white;
-  font-size: 18px;
-  border: 2px solid var(--primary-color);
-  padding: 5px 15px;
-  background-color: var(--main-bg-color);
-  min-width: 120px;
-  white-space: nowrap;
-  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
-  margin-top: 5px;
-  font-size: 14px;
-  ul {
-    padding-inline-start: 0px;
-    margin-top: 0px;
-    list-style-type: none;
-    margin-bottom: 0px;
-
-    li {
-      margin: 5px 0px;
-    }
-  }
-}
-
-.user-info-button {
-  border-radius: 20px;
-  background-color: transparent;
-  color: white;
-  font-size: 18px;
-  border: 2px solid var(--primary-color);
-  padding: 5px 15px;
-  transition: .25s;
-
-  &:hover {
-    border-radius: 5px;
-  }
 }

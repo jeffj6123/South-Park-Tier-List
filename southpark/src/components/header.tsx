@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { UserContext } from '../user-context';
 import { DropDown } from './dropdown';
 import { Login } from './google-auth';
 
 export const Header = () => {
-    const { loggedIn, name } = useContext(UserContext);
+    const { loggedIn } = useContext(UserContext);
 
     let defaultAuth = (<Login></Login>);
 
@@ -14,7 +15,7 @@ export const Header = () => {
 
     return (<div className='header shadow'>
         <h1>
-            South Park Tier List
+            <Link to={'/'}>South Park Tier List</Link>
         </h1>
         <div style={{
             'marginRight': 10

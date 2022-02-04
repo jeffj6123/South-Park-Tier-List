@@ -1,24 +1,38 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MemoEp } from "../components/row";
 import { Grid } from "../components/sortable";
+import { httpServiceContext } from "../services/http.service";
+import { UserContext } from "../user-context";
 
 export function ViewEpisodeList() {
     let { id } = useParams();
-    const [state, setState] = useState({
+    console.log(id);
+
+    const httpService = useContext(httpServiceContext);
+    const { loggedIn } = useContext(UserContext);
+    const [state, setState] = useState<any>({
         loading: true,
-        episodesMap: {},
+        episodesMap: null,
         listOrder: []
     });
 
-
-    let grid = (<div>Loading tier list</div>)
-
-    if (!state.loading) {
-        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
-            listOrder={state.listOrder} disabled={true}></Grid>
+    if (!state.episodesMap && loggedIn) {
+        httpService.loadTiers(id).then(tier => {
+            setState({
+                loading: false,
+                episodesMap: tier,
+                listOrder: httpService.getTierList()
+            })
+        })
     }
 
+    let grid = (<div>Login to start</div>)
+
+    if (!state.loading && loggedIn) {
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
+            listOrder={state.listOrder}></Grid>
+    }
 
     return (<div>
         {grid}

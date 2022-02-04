@@ -32,17 +32,10 @@ export interface OnLoginInfo {
     name: string;
 }
 
-export interface LoginProps {
-    // onLogin(info: OnLoginInfo): void;
-}
-
-export function Login(props: LoginProps) {
-    const { loggedIn, setUserState } = useContext(UserContext)
-
-    // console.log(setUserState)
+export function Login() {
+    const { setUserState } = useContext(UserContext)
 
     const onSuccess = (res) => {
-        console.log(res)
         refreshTokenSetup(res);
         setUserState(res.profileObj.name);
     };
@@ -66,14 +59,10 @@ export function Login(props: LoginProps) {
     );
 }
 
-export function LogOut(props) {
-    const stuff = useContext(UserContext)
-
-    // const test = setUserState;
-    console.log(stuff)
+export function LogOut() {
+    const { setUserState } = useContext(UserContext)
     const onLogOut = () => {
-        // console.log(setUserState);
-        // setUserState("");
+        setUserState("");
     }
 
     return (<div>

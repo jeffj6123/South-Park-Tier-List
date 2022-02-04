@@ -12,7 +12,6 @@ export class DBService {
 
     async getRankingByUser(userId: number) {
         const queryResult = await rankCollection.findOne({'user' : userId});
-        console.log(queryResult)
         return queryResult;
     }
 

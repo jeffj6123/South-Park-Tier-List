@@ -10529,7 +10529,7 @@ export const episodes: Episode[] = data.map(ep => {
       releaseDate: ep.air_date,
       episode: ep.episode,
       season: ep.season,
-      thumbnail: 'images/' + ep.id + '.png',
+      thumbnail: '/images/' + ep.id + '.png',
       id: ep.id,
       description: ep.description,
       characters: ep.characters

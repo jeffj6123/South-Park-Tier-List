@@ -1,0 +1,39 @@
+.tier-list-wrapper {
+    height: calc(100vh - 60px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.tier-list {
+    flex: 1;
+}
+
+.tier-navigation {
+    display: flex;
+    // gap: 15px;
+    width: fit-content;
+    margin: auto;
+}
+
+.tier-nav-tab {
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+
+    .tier-nav-letter {
+        font-size: 25px;
+        cursor: pointer;
+        transition: .25s color;
+        &:hover, &.in-view {
+            color: var(--accent-color);
+            font-size: 30px;
+        }
+    }
+
+    .tier-nav-spacer {
+        font-size: 28px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
