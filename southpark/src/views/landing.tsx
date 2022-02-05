@@ -8,16 +8,49 @@ export class Landing extends React.Component<{}, any> {
     render() {
         return (
             <div className="landing-container">
-
-                <table>
+                <div className="landing-table">
+                <table className="landing-table-container" >
                     <thead>
                         <tr>
                             <td>
-                                
+                                Favorite characters
                             </td>
+                            <td>
+                                Episodes ranked
+                            </td>
+                            <td>
+                                Characters ranked
+                            </td>
+                            
                         </tr>
                     </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                Kyle, Cartman
+                            </td>
+                            <td>
+                                56
+                            </td>
+                            <td>
+                                32
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Kyle, Cartman
+                            </td>
+                            <td>
+                                56
+                            </td>
+                            <td>
+                                32
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
+                </div>
+
 
 
                 <div className="faq-blurb">
