@@ -8,6 +8,18 @@ export class Landing extends React.Component<{}, any> {
     render() {
         return (
             <div className="landing-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+
+
                 <div className="faq-blurb">
                     <h3>Why?</h3>
                     <div>

@@ -197,3 +197,14 @@ a:hover {
 .row-item {
   flex: 1;
 }
+
+.site-title {
+  display: flex;
+  font-size: 2em;
+}
+
+@media only screen and (max-width: 600px) {
+  .site-title {
+    font-size: 1.35em;
+  }
+}

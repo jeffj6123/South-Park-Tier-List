@@ -40,11 +40,15 @@
     color: white;
     font-size: 18px;
     padding: 5px 15px;
-    transition: .25s border;
+    transition: .25s background-color;
     background-color: transparent;
     display: flex;
     align-content: center;
-    gap: 5px;    
+    gap: 5px;
+
+    &:hover {
+        background-color: var(--accent-color);
+    }
 }
 
 
