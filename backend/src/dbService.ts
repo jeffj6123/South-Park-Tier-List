@@ -18,7 +18,10 @@ export class DBService {
     async createRanking(user: number, ranks: IRank[]) {
         const rank = new rankCollection({
             user,
-            ranks
+            ranks,
+            lastUpdated: new Date(),
+            rankedCount: ranks.filter(rank => rank.rank !== "u").length,
+            type: 'episodes'
         })
         return rank.save();
     }
@@ -26,4 +29,10 @@ export class DBService {
     async updateRanking(id: string, ranks: IRank[]) {
         await rankCollection.update(id, {ranks})
     }
+
+    async listEpisodeRankings(orderBy: "count" | "latest") {
+        const queryResult = await rankCollection.query().filter();
+        return queryResult;
+    }
+
 }

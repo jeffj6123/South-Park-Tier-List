@@ -11,11 +11,17 @@ export interface IRank {
 export interface IRankCollection {
     user: number;
     ranks: IRank[];
+    lastUpdated: Date;
+    rankedCount: number;
+    type: string;
 }
 
 const schema = new Schema<IRankCollection>({
     ranks: { type: Array },
-    user: { type: String }
+    user: { type: String },
+    lastUpdated: {type: Date},
+    rankedCount: {type: Number},
+    type: {type: String}
 });
 
 export default gstore.model('RankCollection', schema);

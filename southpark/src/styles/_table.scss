@@ -1,15 +1,23 @@
+$bottom-border: 1px solid var(--primary-color);
+
 .landing-table-container {
-    border-collapse: collapse; 
+    border-collapse: collapse;
     width: 100%;
 
-    td{
-        padding-top: 10px;
-    padding-bottom: 10px;
+    thead {
+        td {
+            border-bottom: $bottom-border;
+        }
     }
 
-    tr:not(:last-child)  {
-        td{
-        border-bottom: 1px solid var(--primary-color);
+    td {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    tr:not(:last-child) {
+        td {
+            border-bottom: $bottom-border;
         }
     }
 }
@@ -22,6 +30,4 @@
     padding: 10px;
 }
 
-.clean-table {
-    
-}
+.clean-table {}

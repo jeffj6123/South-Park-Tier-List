@@ -6,49 +6,55 @@ export class Landing extends React.Component<{}, any> {
     }
 
     render() {
+        const tierLists = [{
+            favorites: ['kyle', 'eric'],
+            rankedEpisodeCount: 50,
+            rankedCharacterCount: 30,
+            id: 19
+        }]
+
         return (
             <div className="landing-container">
-                <div className="landing-table">
-                <table className="landing-table-container" >
-                    <thead>
-                        <tr>
-                            <td>
-                                Favorite characters
-                            </td>
-                            <td>
-                                Episodes ranked
-                            </td>
-                            <td>
-                                Characters ranked
-                            </td>
+                <div className="tier-tile-container">
+                    <div className="tier-tile">
+                        <div>
                             
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                Kyle, Cartman
-                            </td>
-                            <td>
-                                56
-                            </td>
-                            <td>
-                                32
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Kyle, Cartman
-                            </td>
-                            <td>
-                                56
-                            </td>
-                            <td>
-                                32
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="landing-table">
+                    <table className="landing-table-container" >
+                        <thead>
+                            <tr>
+                                <td>
+                                    Favorite characters
+                                </td>
+                                <td>
+                                    Episodes ranked
+                                </td>
+                                <td>
+                                    Characters ranked
+                                </td>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tierLists.map(tier => (
+                                <tr key={tier.id}>
+                                    <td>
+                                        {tier.favorites}
+                                    </td>
+                                    <td>
+                                        {tier.rankedCharacterCount}
+                                    </td>
+                                    <td>
+                                        {tier.rankedEpisodeCount}
+                                    </td>
+                                </tr>))
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
 
@@ -68,7 +74,7 @@ export class Landing extends React.Component<{}, any> {
                         The list of episodes was gathered from the southpark API and from there I scraped thumbnails and descriptions from the wiki.
                     </div>
                 </div>
-                
+
                 <div className="faq-blurb">
                     <h3>I would like to know a bit more</h3>
                     <div>
