@@ -1,4 +1,4 @@
-import express, { Request } from 'express';
+import express, { request, Request } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { authMiddleWare } from './auth';
@@ -16,6 +16,8 @@ gstore.connect(datastore);
 instances.set('unique-id', gstore);
 
 import { DBService } from './dbService';
+import { verifyRankTypeOption } from './rankCollection';
+import { ERROR_CODES, GstoreError } from 'gstore-node/lib/errors';
 const db = new DBService(gstore);
 
 const app = express();
@@ -32,10 +34,31 @@ app.use((req,res,next) => {
 
 // app.use(express.static('static'))
 
-app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
+app.get('/api/ranking/list', async (req: express.Request, res: express.Response) => {
+    const results = await db.listEpisodeRankings();
+    console.log(results);
+    res.json(results);
+    // const { id, type } = req.params;
+
+    // if (!id) {
+    //     res.sendStatus(404)
+    // } else {
+    //     const entity = await db.getRanking(+id);
+    //     res.json(entity.entityData)
+    // }
+});
+
+app.get('/api/ranking/:type/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
     const user = res.locals['auth'];
+
+    const { type } = req.params;
+
+    if(!verifyRankTypeOption(type)) {
+        res.sendStatus(400);
+    }
+
     try {
-        const file = await db.getRankingByUser(user.sub);
+        const file = await db.getRankingByUser(user.sub, type);
         res.json(file.entityData);
     } catch (e) {
         console.log(e)
@@ -46,7 +69,7 @@ app.get('/api/ranking/mine', authMiddleWare, async (req: express.Request, res: e
     }
 });
 app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) => {
-    const { id } = req.params;
+    const { id, type } = req.params;
 
     if (!id) {
         res.sendStatus(404)
@@ -58,29 +81,32 @@ app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) 
 
 
 
-app.put('/api/ranking', authMiddleWare, async (req: Request, res: express.Response) => {
-    const { id } = req.params;
-
+app.put('/api/ranking/:type', authMiddleWare, async (req: Request, res: express.Response) => {
+    const { type } = req.params;
+    
+    if(!verifyRankTypeOption(type)) {
+        res.sendStatus(400);
+    }
+    
     const user = res.locals['auth'];
 
     try {
-        const ranking = await db.getRankingByUser(user.sub);
-        if(ranking.user.toString() !== user.sub.toString()) {
-            res.sendStatus(403)
-            return;
-        }
+        const data = await db.updateRankingByUser(user.sub, type, req.body);
+        console.log(data.id);
 
-        ranking.ranks = req.body
-        await ranking.save();
-
-        // const data = await db.updateRanking(user.sub,  req.body);
         res.sendStatus(200);
-    } catch (e) {
-        console.log(e);
-        const data = await db.createRanking(user.sub,  req.body)
-        res.sendStatus(e);
+    } catch (e: any) {
+        if(e instanceof GstoreError) {
+            if(e.code === ERROR_CODES.ERR_ENTITY_NOT_FOUND) {
+                const data = await db.createRanking(user.sub,  req.body, type)
+                res.sendStatus(200)
+            }
+        }else{
+            console.error(e)            
+            res.sendStatus(500);
+        }
     }
-    });
+});
 
 app.get('/*',(req: Request, res: express.Response) => {
     console.log(req.url)

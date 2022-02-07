@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
-import { MemoEp } from "../components/row";
+import { characters } from "../all_characters";
+import { CharacterItem } from "../components/character-tile";
 import { Grid } from "../components/sortable";
+import { characterType } from "../constants";
 import { httpServiceContext } from "../services/http.service";
 
 export function ViewEpisodeList() {
@@ -12,7 +14,7 @@ export function ViewEpisodeList() {
     });
 
     if(!state.episodesMap) {
-        httpService.loadTiers().then(tier => {
+        httpService.loadTiers(characterType, characters).then(tier => {
             setState({
                 loading: false,
                 episodesMap: tier,
@@ -22,15 +24,11 @@ export function ViewEpisodeList() {
     }
 
 
-    const saveChanges = (changes: any) => {
-        httpService.saveTierList(changes);
-    }
-
     let grid = (<div>Login to start</div>)
 
     if (!state.loading) {
-        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
-            listOrder={state.listOrder} orderChange={saveChanges}></Grid>
+        grid = <Grid groups={state.episodesMap} RenderComponent={CharacterItem}
+            listOrder={state.listOrder}></Grid>
     }
 
 

@@ -1,11 +1,14 @@
 import { Episode } from "./components/row"
 
+export interface IRankable {
+    id: string;
+}
 export interface IRankResponse {
     ranks: { rank: string, id: string }[],
     id: string
 }
 
-export const parseUserRanks = (ranks: IRankResponse, rankOptions: string[]) => {
+export const parseUserRanks = (items: IRankable[], ranks: IRankResponse, rankOptions: string[]) => {
     const rankingMap = {};
 
     ranks.ranks.forEach(rank => {
@@ -13,20 +16,20 @@ export const parseUserRanks = (ranks: IRankResponse, rankOptions: string[]) => {
     })
 
 
-    const episodesMap: Record<string, Episode[]> = rankOptions.reduce((map, tier) => { map[tier] = []; return map }, {});
+    const itemMap: Record<string, IRankable[]> = rankOptions.reduce((map, tier) => { map[tier] = []; return map }, {});
 
-    episodes.forEach(ep => {
+    items.forEach(item => {
       let tier = "u"
-      if (ep.id in rankingMap) {
-        tier = rankingMap[ep.id];
+      if (item.id in rankingMap) {
+        tier = rankingMap[item.id];
       }
-      if (!(tier in episodesMap)) {
-        episodesMap[tier] = [];
+      if (!(tier in itemMap)) {
+        itemMap[tier] = [];
       }
-      episodesMap[tier].push(ep);
+      itemMap[tier].push(item);
     })
 
-    return episodesMap;
+    return itemMap;
 }
 
 export const data = [
@@ -10534,4 +10537,4 @@ export const episodes: Episode[] = data.map(ep => {
       description: ep.description,
       characters: ep.characters
     }
-  })
+  }).sort((ep1, ep2) => +ep1.id - +ep2.id)

@@ -1,4 +1,4 @@
-export const characters = [
+export const characters: any[] = [
     {
         "id": 1,
         "name": "Gerald Broflovski",
@@ -374,24 +374,6 @@ export const characters = [
             "https://spapi.dev/api/episodes/291",
             "https://spapi.dev/api/episodes/298",
             "https://spapi.dev/api/episodes/305"
-        ]
-    },
-    {
-        "id": 5,
-        "name": "Kyle's elephant",
-        "age": null,
-        "sex": "Male",
-        "hair_color": null,
-        "occupation": null,
-        "grade": null,
-        "religion": null,
-        "voiced_by": null,
-        "created_at": "2021-07-14T19:50:16.000000Z",
-        "updated_at": "2021-07-14T19:50:16.000000Z",
-        "url": "https://spapi.dev/api/characters/5",
-        "relatives": [],
-        "episodes": [
-            "https://spapi.dev/api/episodes/5"
         ]
     },
     {
@@ -1461,29 +1443,6 @@ export const characters = [
         ]
     },
     {
-        "id": 24,
-        "name": "Cartman's unnamed relatives",
-        "age": null,
-        "sex": null,
-        "hair_color": "Blond/brown",
-        "occupation": null,
-        "grade": null,
-        "religion": null,
-        "voiced_by": null,
-        "created_at": "2021-07-14T19:50:17.000000Z",
-        "updated_at": "2021-07-14T19:50:17.000000Z",
-        "url": "https://spapi.dev/api/characters/24",
-        "relatives": [
-            {
-                "url": "https://spapi.dev/api/characters/20",
-                "relation": "Parent"
-            }
-        ],
-        "episodes": [
-            "https://spapi.dev/api/episodes/29"
-        ]
-    },
-    {
         "id": 25,
         "name": "Randy Marsh",
         "age": 45,
@@ -2139,24 +2098,24 @@ export const characters = [
             "https://spapi.dev/api/episodes/28"
         ]
     },
-    {
-        "id": 34,
-        "name": "Spookyfish (character)",
-        "age": null,
-        "sex": "Male",
-        "hair_color": null,
-        "occupation": "Pet",
-        "grade": null,
-        "religion": null,
-        "voiced_by": null,
-        "created_at": "2021-07-14T19:50:17.000000Z",
-        "updated_at": "2021-07-14T19:50:17.000000Z",
-        "url": "https://spapi.dev/api/characters/34",
-        "relatives": [],
-        "episodes": [
-            "https://spapi.dev/api/episodes/28"
-        ]
-    },
+    // {
+    //     "id": 34,
+    //     "name": "Spookyfish (character)",
+    //     "age": null,
+    //     "sex": "Male",
+    //     "hair_color": null,
+    //     "occupation": "Pet",
+    //     "grade": null,
+    //     "religion": null,
+    //     "voiced_by": null,
+    //     "created_at": "2021-07-14T19:50:17.000000Z",
+    //     "updated_at": "2021-07-14T19:50:17.000000Z",
+    //     "url": "https://spapi.dev/api/characters/34",
+    //     "relatives": [],
+    //     "episodes": [
+    //         "https://spapi.dev/api/episodes/28"
+    //     ]
+    // },
     {
         "id": 35,
         "name": "Stuart McCormick",

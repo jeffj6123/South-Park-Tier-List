@@ -1,4 +1,5 @@
 import React from "react";
+import TierSearch from "../components/tier-search";
 
 export class Landing extends React.Component<{}, any> {
     constructor(props) {
@@ -6,59 +7,36 @@ export class Landing extends React.Component<{}, any> {
     }
 
     render() {
-        const tierLists = [{
-            favorites: ['kyle', 'eric'],
-            rankedEpisodeCount: 50,
-            rankedCharacterCount: 30,
-            id: 19
-        }]
+        const tierLists = [
+            {
+                rankedCount: 50,
+                id: 19,
+                lastUpdated: new Date(),
+                type: 'episodes'
+            },
+            {
+                rankedCount: 50,
+                id: 19,
+                lastUpdated: new Date(),
+                type: 'episodes'
+            },
+            {
+                rankedCount: 50,
+                id: 19,
+                lastUpdated: new Date(),
+                type: 'episodes'
+            },
+            {
+                rankedCount: 50,
+                id: 19,
+                lastUpdated: new Date(),
+                type: 'episodes'
+            },
+    ]
 
         return (
             <div className="landing-container">
-                <div className="tier-tile-container">
-                    <div className="tier-tile">
-                        <div>
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <div className="landing-table">
-                    <table className="landing-table-container" >
-                        <thead>
-                            <tr>
-                                <td>
-                                    Favorite characters
-                                </td>
-                                <td>
-                                    Episodes ranked
-                                </td>
-                                <td>
-                                    Characters ranked
-                                </td>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tierLists.map(tier => (
-                                <tr key={tier.id}>
-                                    <td>
-                                        {tier.favorites}
-                                    </td>
-                                    <td>
-                                        {tier.rankedCharacterCount}
-                                    </td>
-                                    <td>
-                                        {tier.rankedEpisodeCount}
-                                    </td>
-                                </tr>))
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-
-
+                <TierSearch></TierSearch>
                 <div className="faq-blurb">
                     <h3>Why?</h3>
                     <div>

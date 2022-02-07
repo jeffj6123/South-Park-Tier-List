@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
-import { IRankResponse, parseUserRanks } from "../all_episodes";
+import { episodes, IRankable, IRankResponse, parseUserRanks } from "../all_episodes";
+import { characters} from "../all_characters";
 import { Episode } from '../components/row';
 
 
@@ -12,12 +13,15 @@ export interface IRank {
 export interface IRankCollection {
     id: string;
     ranks: IRank[];
+    type: string;
+    user: string;
+    rankedCount: string;
 }
 
 export class HttpService {
-    private cachedCollections: Record<string, Record<string, Episode[]>> = {};
+    private cachedCollections: Record<string, Record<string, IRankable[]>> = {};
 
-    async saveTierList(changes: Record<string, Episode[]>) {
+    async saveTierList(type: string, changes: Record<string, IRankable[]>) {
         let data: IRank[] = [];
     
         Object.keys(changes).forEach(key => {
@@ -25,12 +29,12 @@ export class HttpService {
         })
     
         const token = localStorage.getItem('authToken') || "";
-        return axios.put(`/api/ranking`, data, {headers: {'authorization': token}}).then(res => {
+        return axios.put(`/api/ranking/${type}`, data, {headers: {'authorization': token}}).then(res => {
           console.log("saved")
         })
     }
 
-    async loadTiers(id: string = "mine") {
+    async loadTiers(type: string, items: IRankable[], id: string = "mine") {
         if(id in this.cachedCollections) {
             return this.cachedCollections[id];
         }
@@ -42,14 +46,19 @@ export class HttpService {
             config = {headers: {'authorization': token}};
         }
     
-        const res = await axios.get<IRankResponse>(`/api/ranking/${id}`, config);
+        const res = await axios.get<IRankResponse>(`/api/ranking/${type}/${id}`, config);
 
-        const parsed = parseUserRanks(res.data, ['s','a','b','c','d','f']);
+        const parsed = parseUserRanks(items, res.data, ['s','a','b','c','d','f']);
 
         this.cachedCollections[res.data.id] = parsed;
 
         return parsed;
       }
+
+    async loadTiersList() {
+        const res = await axios.get(`api/ranking/list`);
+        return res.data;
+    }
 
     getTierList(): string[] {
         return  ['s', 'a', 'b', 'c', 'd', 'f', 'u'];

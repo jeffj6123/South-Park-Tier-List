@@ -11,8 +11,8 @@ export const Header = () => {
 
     if (loggedIn) {
         defaultAuth = (<DropDown dropdownContent={ <ul >
-            <li ><Link to={'episodes/mine'}> My Episode Ranks</Link></li>
-            <li>My Character Ranks</li>
+            <li><Link to={'episodes/mine'}> My Episode Ranks</Link></li>
+            <li><Link to={'characters/mine'}> My Character Ranks</Link></li>
             <li>
                 <div style={{margin:'auto'}}>
                 <LogOut></LogOut>

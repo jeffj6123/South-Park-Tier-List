@@ -1,27 +1,44 @@
-// import React from "react";
-// import { MemoEp } from "../components/row";
-// import { Grid } from "../components/sortable";
+import React, { useContext, useEffect, useState } from "react";
+import { characters } from "../all_characters";
+import { CharacterItem } from "../components/character-tile";
+import { Grid } from "../components/sortable";
+import { characterType } from "../constants";
+import { httpServiceContext } from "../services/http.service";
 
-// export class EditEpisodeList extends React.Component<{}, any> {
-//     constructor(props) {
-//         super(props);
+export function EditCharacterList() {
+    const httpService = useContext(httpServiceContext);
+    const [state, setState] = useState<any>({
+        loading: true,
+        characterMap: null,
+        listOrder: []
+    });
 
-//         this.saveChanges = this.saveChanges.bind(this);
-//     }
+    useEffect(() => {
+        httpService.loadTiers(characterType, characters).then(tier => {
+            setState({
+                loading: false,
+                characterMap: tier,
+                listOrder: httpService.getTierList()
+            })
+        })
+    })
 
-//     saveChanges(changes: any) {
 
-//     }
+    const saveChanges = (changes: any) => {
+        httpService.saveTierList(characterType, changes);
+    }
 
-//     render() {
-//         let grid = (<div>Login to start</div>)
+    let grid = (<div>Login to start</div>)
 
-//     if (!this.state.loading) {
-//       grid = <Grid groups={this.state.episodesMap} RenderComponent={MemoEp}
-//         listOrder={this.state.listOrder} orderChange={this.saveChanges}></Grid>
-//     }
+    if (!state.loading) {
+        grid = <Grid groups={state.characterMap} RenderComponent={CharacterItem}
+            listOrder={state.listOrder} orderChange={saveChanges}></Grid>
+    }
 
-    
-//     return ({grid})
-//     }
-// }
+    console.log(state)
+
+
+    return (<div>
+        {grid}
+    </div>)
+}

@@ -1,10 +1,11 @@
 import React from 'react';
+import { IRankable } from '../all_episodes';
 import { IRenderComponent } from './sortable';
 
 export interface Character {
     name: string;
 }
-export interface Episode {
+export interface Episode extends IRankable {
     name: string;
     episode: number;
 

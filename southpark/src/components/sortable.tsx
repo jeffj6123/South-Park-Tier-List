@@ -47,7 +47,7 @@ export interface GridProps {
 export function Grid(props: GridProps) {
   const [items, setItems] = useState(props.groups);
   const [activeId, setActiveId, ] = useState<Episode | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const [visibleTiers, setVisibleTiers] = useState([]);
   const ItemMap: Record<string, { row: string, item: any }> = {};
 
@@ -77,6 +77,8 @@ export function Grid(props: GridProps) {
       coordinateGetter: sortableKeyboardCoordinates
     })
   );
+
+  console.log(visibleTiers)
 
   return (
     <div className="tier-list-wrapper">
@@ -111,7 +113,8 @@ export function Grid(props: GridProps) {
 
               rowMapper.push({
                 tier: key,
-                startRow: rowCount + 1
+                startRow: rowCount + 1,
+                endRow: rowCount + 1 + count
               });
               rowCount += count;
             })
@@ -119,7 +122,6 @@ export function Grid(props: GridProps) {
             rowMapper.reverse();
 
             lastCalculatedRows = rowMapper;
-
             return (
               <List
                 className='List'
@@ -129,7 +131,8 @@ export function Grid(props: GridProps) {
                 scrollToIndex={currentIndex}
                 scrollToAlignment={'start'}
                 onRowsRendered={(data) => {
-                  setVisibleTiers(lastCalculatedRows.filter(tier => tier.startRow > data.startIndex && tier.startRow <= data.stopIndex));
+                  setVisibleTiers(lastCalculatedRows.filter(tier => (tier.startRow > data.startIndex &&  tier.startRow <= data.stopIndex) ||
+                                                                    (tier.endRow >= data.stopIndex && tier.startRow <= data.startIndex)));
                 }}
                 rowHeight={({ index }) => {
                   const tierDisplay = rowMapper.find(tier => (tier.startRow - 1) === index);

@@ -3,6 +3,13 @@ import { Gstore, instances } from 'gstore-node';
 const gstore = instances.get('unique-id');
 const { Schema } = gstore;
 
+export type RankType = "characters" | "episodes";
+export const RankTypeOptions: RankType[] = ["characters", "episodes"]
+
+export const verifyRankTypeOption = (rankType: string) => {
+    return RankTypeOptions.includes(rankType as RankType);
+}
+
 export interface IRank {
     id: string;
     rank: string;
