@@ -3,17 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import RelativeTime from '@yaireo/relative-time'
 import { httpServiceContext } from "../services/http.service";
 
+type SortDirection = "up" | "down";
+
+export interface SortHeaderState {
+    direction: SortDirection;
+    activeHeader: string;
+}
+
+export interface SortHeaderProps {
+    id: string;
+    displayText: React.ReactNode;
+    direction?: SortDirection;
+    toggled: ({direction: SortDirection, id: string}) => void;
+}
+
+export function SortHeader(props: SortHeaderProps) {
+    return (<div className="table-header" onClick={() => props.toggled({id: props.id, direction: (props.direction === 'up' ? 'down': 'up')})}>
+        {props.displayText}
+        {props.direction && <i className={`arrow ${props.direction} ri-arrow-${props.direction}-line`}></i>}
+    </div>)
+}
+
 export default function TierSearch() {
     const [tierLists, setTierLists] = useState([]);
     const relativeTime = new RelativeTime(); 
     const httpService = useContext(httpServiceContext);
-
     const navigate = useNavigate();
 
-    const viewTier = (type: string, id: number) => {
-        console.log("test")
-        navigate(`/${type}/${id}`, {replace: true})
-    };
+    const [sortState, setSortState] = useState<SortHeaderState>({
+        direction: "down",
+        activeHeader: 'date'
+    })
 
     useEffect(() => {
         httpService.loadTiersList().then(tiers => {
@@ -21,51 +41,28 @@ export default function TierSearch() {
         })
     }, [])
 
-    // const tierLists = [
-    //     {
-    //         rankedCount: 50,
-    //         id: 19,
-    //         lastUpdated: new Date("2022-02-07T00:10:31.075Z"),
-    //         type: 'episodes'
-    //     },
-    //     {
-    //         rankedCount: 50,
-    //         id: 20,
-    //         lastUpdated: new Date(),
-    //         type: 'episodes'
-    //     },
-    //     {
-    //         rankedCount: 50,
-    //         id: 21,
-    //         lastUpdated: new Date(),
-    //         type: 'episodes'
-    //     },
-    //     {
-    //         rankedCount: 50,
-    //         id: 22,
-    //         lastUpdated: new Date(),
-    //         type: 'episodes'
-    //     },
-    // ]
+
+    const viewTier = (type: string, id: number) => { navigate(`/${type}/${id}`, {replace: true}) };
+    const toggleSortHeader = (data: {direction: SortDirection, id: string}) => {
+        setSortState({
+            direction: data.direction,
+            activeHeader: data.id
+        })
+    }
+
+    const headers = [{ display: 'type', sortId: 'type' }, { display: '# ranked', sortId: 'ranked' }, { display: 'last Updated', sortId: 'date' }]
 
     return (
         <div className="landing-table">
             <table className="landing-table-container" >
                 <thead>
                     <tr>
-                        <td>
-                            Type
-
-                            <i className="ri-arrow-up-line"></i>
-
-                        </td>
-                        <td>
-                            # ranked
-                        </td>
-                        <td>
-                            Last Updated
-                        </td>
-
+                        {headers.map(header => (
+                            <td key={header.sortId}>
+                                <SortHeader id={header.sortId} displayText={header.display} toggled={toggleSortHeader}
+                                    direction={sortState.activeHeader === header.sortId ? sortState.direction : null}></SortHeader>
+                            </td>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>

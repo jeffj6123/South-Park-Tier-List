@@ -13,8 +13,6 @@ $bottom-border: 1px solid var(--primary-color);
 
     td {
         padding: 10px;
-        // padding-top: 10px;
-        // padding-bottom: 10px;
     }
 
     tbody {
@@ -44,4 +42,20 @@ $bottom-border: 1px solid var(--primary-color);
     text-transform: capitalize;
 }
 
-.clean-table {}
+.table-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .arrow {
+        font-size: 20px;
+
+        &.down {
+            color: var(--accent-color);
+        }
+
+        &.up {
+            color: var(--primary-color);
+        }
+    }
+}
