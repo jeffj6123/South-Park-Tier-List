@@ -16,6 +16,11 @@ html {
   color: var(--primary-font-color);
 }
 
+body{
+  width: 100%;
+  overflow-x: hidden;
+}
+
 h5,
 h4,
 h3,
@@ -164,6 +169,7 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   padding-left: 10px;
+  max-width: 100%;
 }
 
 .shadow {

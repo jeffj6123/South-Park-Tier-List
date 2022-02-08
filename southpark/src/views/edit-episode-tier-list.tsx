@@ -21,20 +21,9 @@ export function EditEpisodeList() {
             setState({
                 episodesMap: tier,
             })
-            setLoading(true);
+            setLoading(false);
         })
     }, [])
-
-    // if (!state.episodesMap && loggedIn) {
-    //     httpService.loadTiers(episodeType, episodes).then(tier => {
-    //         setState({
-    //             loading: false,
-    //             episodesMap: tier,
-    //             listOrder: httpService.getTierList()
-    //         })
-    //     })
-    // }
-
 
     const saveChanges = (changes: any) => {
         httpService.saveTierList(episodeType, changes);
@@ -42,9 +31,9 @@ export function EditEpisodeList() {
 
     let grid = (<div>Login to start</div>)
 
-    if (!state.loading && loggedIn) {
+    if (!loading && state.episodesMap) {
         grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
-            listOrder={state.listOrder} orderChange={saveChanges}></Grid>
+            listOrder={listOrder} orderChange={saveChanges}></Grid>
     }
 
     return (<div>

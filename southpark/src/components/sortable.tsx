@@ -78,8 +78,6 @@ export function Grid(props: GridProps) {
     })
   );
 
-  console.log(visibleTiers)
-
   return (
     <div className="tier-list-wrapper">
       <div className="tier-navigation">

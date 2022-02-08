@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import RelativeTime from '@yaireo/relative-time'
+import { httpServiceContext } from "../services/http.service";
 
 export default function TierSearch() {
+    const [tierLists, setTierLists] = useState([]);
     const relativeTime = new RelativeTime(); 
+    const httpService = useContext(httpServiceContext);
 
     const navigate = useNavigate();
 
@@ -12,32 +15,38 @@ export default function TierSearch() {
         navigate(`/${type}/${id}`, {replace: true})
     };
 
-    const tierLists = [
-        {
-            rankedCount: 50,
-            id: 19,
-            lastUpdated: new Date("2022-02-07T00:10:31.075Z"),
-            type: 'episodes'
-        },
-        {
-            rankedCount: 50,
-            id: 20,
-            lastUpdated: new Date(),
-            type: 'episodes'
-        },
-        {
-            rankedCount: 50,
-            id: 21,
-            lastUpdated: new Date(),
-            type: 'episodes'
-        },
-        {
-            rankedCount: 50,
-            id: 22,
-            lastUpdated: new Date(),
-            type: 'episodes'
-        },
-    ]
+    useEffect(() => {
+        httpService.loadTiersList().then(tiers => {
+            setTierLists(tiers.entities);
+        })
+    }, [])
+
+    // const tierLists = [
+    //     {
+    //         rankedCount: 50,
+    //         id: 19,
+    //         lastUpdated: new Date("2022-02-07T00:10:31.075Z"),
+    //         type: 'episodes'
+    //     },
+    //     {
+    //         rankedCount: 50,
+    //         id: 20,
+    //         lastUpdated: new Date(),
+    //         type: 'episodes'
+    //     },
+    //     {
+    //         rankedCount: 50,
+    //         id: 21,
+    //         lastUpdated: new Date(),
+    //         type: 'episodes'
+    //     },
+    //     {
+    //         rankedCount: 50,
+    //         id: 22,
+    //         lastUpdated: new Date(),
+    //         type: 'episodes'
+    //     },
+    // ]
 
     return (
         <div className="landing-table">
@@ -46,6 +55,9 @@ export default function TierSearch() {
                     <tr>
                         <td>
                             Type
+
+                            <i className="ri-arrow-up-line"></i>
+
                         </td>
                         <td>
                             # ranked
@@ -66,7 +78,7 @@ export default function TierSearch() {
                                 {tier.rankedCount}
                             </td>
                             <td>
-                                {relativeTime.from(tier.lastUpdated)}
+                                {tier.lastUpdated && relativeTime.from(new Date(tier.lastUpdated))}
                             </td>
                         </tr>))
                     }

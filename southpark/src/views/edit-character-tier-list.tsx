@@ -21,7 +21,7 @@ export function EditCharacterList() {
                 listOrder: httpService.getTierList()
             })
         })
-    })
+    }, [])
 
 
     const saveChanges = (changes: any) => {

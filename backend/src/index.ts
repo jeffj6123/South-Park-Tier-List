@@ -36,16 +36,7 @@ app.use((req,res,next) => {
 
 app.get('/api/ranking/list', async (req: express.Request, res: express.Response) => {
     const results = await db.listEpisodeRankings();
-    console.log(results);
     res.json(results);
-    // const { id, type } = req.params;
-
-    // if (!id) {
-    //     res.sendStatus(404)
-    // } else {
-    //     const entity = await db.getRanking(+id);
-    //     res.json(entity.entityData)
-    // }
 });
 
 app.get('/api/ranking/:type/mine', authMiddleWare, async (req: express.Request, res: express.Response) => {
@@ -68,14 +59,27 @@ app.get('/api/ranking/:type/mine', authMiddleWare, async (req: express.Request, 
         });
     }
 });
+
 app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) => {
-    const { id, type } = req.params;
+    const { id } = req.params;
 
     if (!id) {
         res.sendStatus(404)
     } else {
-        const entity = await db.getRanking(+id);
-        res.json(entity.entityData)
+        try {
+            const entity = await db.getRanking(+id);
+            res.json(entity.entityData)
+        } catch (e) {
+            if (e instanceof GstoreError) {
+                if (e.code === ERROR_CODES.ERR_ENTITY_NOT_FOUND) {
+                    res.sendStatus(404);
+                } else {
+                    res.sendStatus(500);
+                }
+            } else {
+                res.sendStatus(500);
+            }
+        }
     }
 });
 
@@ -109,7 +113,7 @@ app.put('/api/ranking/:type', authMiddleWare, async (req: Request, res: express.
 });
 
 app.get('/*',(req: Request, res: express.Response) => {
-    console.log(req.url)
+    console.warn("catch all: " + req.url)
 
     try {
         res.sendFile('static/index.html'); 

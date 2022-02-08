@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import { episodes, IRankable, IRankResponse, parseUserRanks } from "../all_episodes";
+import { data, episodes, IRankable, IRankResponse, parseUserRanks } from "../all_episodes";
 import { characters} from "../all_characters";
 import { Episode } from '../components/row';
 
@@ -46,7 +46,7 @@ export class HttpService {
             config = {headers: {'authorization': token}};
         }
     
-        const res = await axios.get<IRankResponse>(`/api/ranking/${type}/${id}`, config);
+        const res = await axios.get<IRankResponse>(`/api/ranking/${id === "mine" ? (type + "/"): ''}${id}`, config);
 
         const parsed = parseUserRanks(items, res.data, ['s','a','b','c','d','f']);
 
@@ -56,7 +56,7 @@ export class HttpService {
       }
 
     async loadTiersList() {
-        const res = await axios.get(`api/ranking/list`);
+        const res = await axios.get(`/api/ranking/list`);
         return res.data;
     }
 
