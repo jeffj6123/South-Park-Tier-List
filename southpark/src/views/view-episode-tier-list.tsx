@@ -33,7 +33,7 @@ export function ViewEpisodeList() {
 
     if (!state.loading && loggedIn) {
         grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
-            listOrder={state.listOrder}></Grid>
+            listOrder={state.listOrder} disabled={true}></Grid>
     }
 
     return (<div>

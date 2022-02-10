@@ -34,9 +34,17 @@ app.use((req,res,next) => {
 
 // app.use(express.static('static'))
 
+app.get('/api/ranking/:type/master', async (req: express.Request, res: express.Response) => {
+    const { type } = req.params;
+
+    const masterList = await db.getMaster(type);
+    res.json(masterList.entityData);
+});
+
 app.get('/api/ranking/random', async (req: express.Request, res: express.Response) => {
     const key = await db.getRandom();
-    res.json({key});
+    console.log(key)
+    res.json(key);
 });
 
 app.get('/api/ranking/list', async (req: express.Request, res: express.Response) => {

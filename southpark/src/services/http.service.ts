@@ -3,6 +3,7 @@ import React from 'react';
 import { data, episodes, IRankable, IRankResponse, parseUserRanks } from "../all_episodes";
 import { characters} from "../all_characters";
 import { Episode } from '../components/row';
+import { stringify } from 'querystring';
 
 
 export interface IRank {
@@ -54,6 +55,12 @@ export class HttpService {
 
         return parsed;
       }
+
+    async getRandomTier() {
+        const res = await axios.get<{key: string, type: string}>(`/api/ranking/random`);
+
+        return res.data;
+    }
 
     async loadTiersList(orderByCount: boolean, descending: boolean, type?: string) {
         const res = await axios.get(`/api/ranking/list`, {params: {orderByCount, descending, type}});

@@ -21,6 +21,7 @@ export interface IRankCollection {
     lastUpdated: Date;
     rankedCount: number;
     type: string;
+    master?: boolean;
 }
 
 const schema = new Schema<IRankCollection>({
@@ -28,7 +29,8 @@ const schema = new Schema<IRankCollection>({
     user: { type: String },
     lastUpdated: {type: Date},
     rankedCount: {type: Number},
-    type: {type: String}
+    type: {type: String},
+    master: {type: Boolean }
 });
 
 export default gstore.model('RankCollection', schema);

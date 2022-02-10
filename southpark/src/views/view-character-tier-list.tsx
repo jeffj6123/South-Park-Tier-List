@@ -30,7 +30,7 @@ export function ViewCharacterList() {
 
     if (!state.loading) {
         grid = <Grid groups={state.episodesMap} RenderComponent={CharacterItem}
-            listOrder={state.listOrder}></Grid>
+            listOrder={state.listOrder} disabled={true}></Grid>
     }
 
 

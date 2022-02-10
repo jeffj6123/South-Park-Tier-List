@@ -58,13 +58,14 @@ export class DBService {
     }
 
     async getRandom() {
-        let keysOnlyEntities = await rankCollection.query().select("__key__").limit(100).run();
+        let keysOnlyEntities = await rankCollection.query().select(["__key__", "type"]).limit(100).run();
 
-        const onlyKeys: string[] = keysOnlyEntities['entities'].map(key => key.id);
+        const key = keysOnlyEntities['entities'][Math.floor(Math.random() * keysOnlyEntities['entities'].length)];
 
-        const key = onlyKeys[Math.floor(Math.random() * onlyKeys.length)];
-
-        return key;
+        return {key: key.id, type: key.type};
     }
 
+    async getMaster(type: string) {
+        return await rankCollection.findOne({master: true, type});
+    }
 }

@@ -178,7 +178,7 @@ export function Grid(props: GridProps) {
                       const item = container[i];
                       items2.push(
                         <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier} selected={item.id === activeId?.id}
-                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={false} last={(i + 1) === toIndex && !lessItemsThenMax} />)
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={props.disabled} last={(i + 1) === toIndex && !lessItemsThenMax} />)
                     }
 
                     return (

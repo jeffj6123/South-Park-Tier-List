@@ -10,6 +10,7 @@ import { EditEpisodeList } from './views/edit-episode-tier-list';
 import { HttpService, httpServiceContext } from './services/http.service';
 import { EditCharacterList } from './views/edit-character-tier-list';
 import { ViewCharacterList } from './views/view-character-tier-list';
+import { masterCharacterList, masterEpisodeList } from './constants';
 
 class App extends React.Component<{}, any> {
   private httpService: HttpService = new HttpService();
@@ -50,8 +51,10 @@ class App extends React.Component<{}, any> {
             <Header></Header>
             <Routes>
               <Route path="/episodes/mine" element={<EditEpisodeList/> } />
+              <Route path={masterEpisodeList} element={<ViewEpisodeList/>} />
               <Route path="/episodes/:id" element={<ViewEpisodeList/>} />
               <Route path="/characters/mine" element={<EditCharacterList/>} />
+              <Route path={masterCharacterList} element={<ViewCharacterList/>} />
               <Route path="/characters/:id" element={<ViewCharacterList/>} />
               <Route path="/*" element={<Landing />} />
               {/* <Route path="about" element={<About />} /> */}
