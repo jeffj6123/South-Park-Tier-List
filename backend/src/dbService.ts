@@ -42,9 +42,29 @@ export class DBService {
         return ranks.filter(rank => rank.rank !== "u").length;
     }
 
-    async listEpisodeRankings(orderBy: "count" | "latest" = "count") {
-        const queryResult = await rankCollection.query();
+    async listEpisodeRankings(orderByCount: boolean, descending: boolean, type?: string) {
+       let queryResult = rankCollection.query();
+        if(orderByCount) {
+           queryResult = queryResult.order("rankedCount", {descending: descending})
+        }else{
+           queryResult = queryResult.order("lastUpdated", {descending: descending})
+        }
+
+        if(type) {
+            queryResult = queryResult.filter("type", type);
+        }
+
         return queryResult.run();
+    }
+
+    async getRandom() {
+        let keysOnlyEntities = await rankCollection.query().select("__key__").limit(100).run();
+
+        const onlyKeys: string[] = keysOnlyEntities['entities'].map(key => key.id);
+
+        const key = onlyKeys[Math.floor(Math.random() * onlyKeys.length)];
+
+        return key;
     }
 
 }

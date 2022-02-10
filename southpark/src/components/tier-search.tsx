@@ -8,21 +8,32 @@ type SortDirection = "up" | "down";
 export interface SortHeaderState {
     direction: SortDirection;
     activeHeader: string;
+    type?: string;
 }
 
 export interface SortHeaderProps {
     id: string;
     displayText: React.ReactNode;
     direction?: SortDirection;
+    disabled?: boolean;
     toggled: ({direction: SortDirection, id: string}) => void;
 }
 
 export function SortHeader(props: SortHeaderProps) {
-    return (<div className="table-header" onClick={() => props.toggled({id: props.id, direction: (props.direction === 'up' ? 'down': 'up')})}>
+    return (<div className="table-header" onClick={() => !props.disabled && props.toggled({id: props.id, direction: (props.direction === 'up' ? 'down': 'up')})}>
         {props.displayText}
-        {props.direction && <i className={`arrow ${props.direction} ri-arrow-${props.direction}-line`}></i>}
+        {props.direction && <i className={`arrow ${props.direction} ${props.direction ? 'ri-arrow-up-line': ''} `}></i>}
     </div>)
 }
+
+export interface TypeToggleProps {
+    activeToggled
+    toggled: (type:string) => void;
+}
+
+// export function typeToggle(props) {
+
+// }
 
 export default function TierSearch() {
     const [tierLists, setTierLists] = useState([]);
@@ -32,25 +43,42 @@ export default function TierSearch() {
 
     const [sortState, setSortState] = useState<SortHeaderState>({
         direction: "down",
-        activeHeader: 'date'
+        activeHeader: 'date',
+        type: null
     })
 
-    useEffect(() => {
-        httpService.loadTiersList().then(tiers => {
+
+    const loadData = (state?: SortHeaderState) => {
+        if(!state) {
+            state = sortState;
+        }
+        console.log(state)
+
+        httpService.loadTiersList(state.activeHeader === "ranked", state.direction === "down", ).then(tiers => {
             setTierLists(tiers.entities);
         })
+    }
+
+    useEffect(() => {
+        loadData();
     }, [])
 
 
     const viewTier = (type: string, id: number) => { navigate(`/${type}/${id}`, {replace: true}) };
     const toggleSortHeader = (data: {direction: SortDirection, id: string}) => {
-        setSortState({
+        setSortState({...sortState,
             direction: data.direction,
             activeHeader: data.id
         })
+
+        loadData({
+            direction: data.direction,
+            activeHeader: data.id,
+            type: sortState.type
+        });
     }
 
-    const headers = [{ display: 'type', sortId: 'type' }, { display: '# ranked', sortId: 'ranked' }, { display: 'last Updated', sortId: 'date' }]
+    const headers = [{ display: 'type', sortId: 'type', disabled: true }, { display: '# ranked', sortId: 'ranked' }, { display: 'last Updated', sortId: 'date' }]
 
     return (
         <div className="landing-table">
@@ -59,7 +87,7 @@ export default function TierSearch() {
                     <tr>
                         {headers.map(header => (
                             <td key={header.sortId}>
-                                <SortHeader id={header.sortId} displayText={header.display} toggled={toggleSortHeader}
+                                <SortHeader id={header.sortId} displayText={header.display} toggled={toggleSortHeader} disabled={header.disabled}
                                     direction={sortState.activeHeader === header.sortId ? sortState.direction : null}></SortHeader>
                             </td>
                         ))}

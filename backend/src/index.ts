@@ -34,8 +34,15 @@ app.use((req,res,next) => {
 
 // app.use(express.static('static'))
 
+app.get('/api/ranking/random', async (req: express.Request, res: express.Response) => {
+    const key = await db.getRandom();
+    res.json({key});
+});
+
 app.get('/api/ranking/list', async (req: express.Request, res: express.Response) => {
-    const results = await db.listEpisodeRankings();
+    const { orderByCount, descending, type } = req.query;
+    console.log(descending)
+    const results = await db.listEpisodeRankings(orderByCount === "true", descending === "true", (type || "").toString());
     res.json(results);
 });
 

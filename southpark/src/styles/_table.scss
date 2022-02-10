@@ -35,7 +35,6 @@ $bottom-border: 1px solid var(--primary-color);
 
 .landing-table {
     box-shadow: rgb(0 0 0 / 16%) 0px 10px 36px 0px, rgb(0 0 0 / 6%) 0px 0px 0px 1px;
-    width: 100%;
     border: 2px solid var(--accent-color);
     border-radius: 6px;
     padding: 10px;
@@ -49,13 +48,18 @@ $bottom-border: 1px solid var(--primary-color);
 
     .arrow {
         font-size: 20px;
+        animation: fade-in forwards .5s;
+        transition-property: color, transform;
+        transition-duration: .5s;
 
         &.down {
             color: var(--accent-color);
+            transform: rotate(180deg);
         }
 
         &.up {
             color: var(--primary-color);
+            transform: rotate(0deg);
         }
     }
 }

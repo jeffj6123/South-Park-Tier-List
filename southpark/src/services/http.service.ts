@@ -55,8 +55,8 @@ export class HttpService {
         return parsed;
       }
 
-    async loadTiersList() {
-        const res = await axios.get(`/api/ranking/list`);
+    async loadTiersList(orderByCount: boolean, descending: boolean, type?: string) {
+        const res = await axios.get(`/api/ranking/list`, {params: {orderByCount, descending, type}});
         return res.data;
     }
 

@@ -9,6 +9,10 @@ export class Landing extends React.Component<{}, any> {
     render() {
            return (
             <div className="landing-container">
+                   <div className="landing-button-wrapper">
+                       <button className="simple-button primary">View Random List</button>
+                       <button className="simple-button secondary">View Original List</button>
+                   </div>
                 <TierSearch></TierSearch>
                 <div className="faq-blurb">
                     <h3>Why?</h3>
