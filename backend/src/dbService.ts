@@ -12,7 +12,6 @@ export class DBService {
     }
 
     async getRankingByUser(userId: number, type: string) {
-        console.log(type)
         const queryResult = await rankCollection.findOne({'user' : userId, type});
         return queryResult;
     }
@@ -42,16 +41,20 @@ export class DBService {
         return ranks.filter(rank => rank.rank !== "u").length;
     }
 
-    async listEpisodeRankings(orderByCount: boolean, descending: boolean, type?: string) {
+    async listEpisodeRankings(options: { orderByCount: boolean, descending: boolean, type?: string, cursor?: string}) {
        let queryResult = rankCollection.query();
-        if(orderByCount) {
-           queryResult = queryResult.order("rankedCount", {descending: descending})
+        if(options.orderByCount) {
+           queryResult = queryResult.order("rankedCount", {descending: options.descending})
         }else{
-           queryResult = queryResult.order("lastUpdated", {descending: descending})
+           queryResult = queryResult.order("lastUpdated", {descending: options.descending})
         }
 
-        if(type) {
-            queryResult = queryResult.filter("type", type);
+        if(options.type) {
+            queryResult = queryResult.filter("type", options.type);
+        }
+
+        if(options.cursor) {
+            queryResult = queryResult.start(options.cursor) as any;
         }
 
         return queryResult.run();

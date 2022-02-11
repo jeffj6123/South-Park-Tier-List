@@ -3,6 +3,8 @@
 @use 'styles/landing';
 @use 'styles/tier';
 @use 'styles/table';
+@use 'styles/pager';
+
 :root {
   --main-bg-color: #282c34;
   --primary-color: #38bac1;

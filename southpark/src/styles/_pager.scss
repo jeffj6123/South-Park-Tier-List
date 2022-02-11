@@ -1,0 +1,23 @@
+.pager {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .pager-button {
+        width: 30px;
+        height: 30px;
+        border-width: 0px;
+        border-radius: 50px;
+        display: flex;
+        font-size: 30px;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+        background-color: transparent;
+        color: var(--primary-font-color);
+        cursor: pointer;
+        transition: .25s background-color;
+        &:hover {
+            background-color: var(--accent-color);
+        }
+    }
+}

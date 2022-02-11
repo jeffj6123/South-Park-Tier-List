@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import RelativeTime from '@yaireo/relative-time'
 import { httpServiceContext } from "../services/http.service";
+import Pager from "./pager";
 
 type SortDirection = "up" | "down";
 
@@ -109,6 +110,7 @@ export default function TierSearch() {
                     }
                 </tbody>
             </table>
+            <Pager onClick={() => {}}></Pager>
         </div>
     )
 }
