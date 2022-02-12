@@ -110,7 +110,9 @@ export default function TierSearch() {
                     }
                 </tbody>
             </table>
-            <Pager onClick={() => {}}></Pager>
+            <div className="flex-align-right">
+                <Pager onClick={() => {}} disableFirst={true}></Pager>
+            </div>
         </div>
     )
 }

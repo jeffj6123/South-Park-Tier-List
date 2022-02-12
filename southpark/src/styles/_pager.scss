@@ -16,8 +16,26 @@
         color: var(--primary-font-color);
         cursor: pointer;
         transition: .25s background-color;
-        &:hover {
-            background-color: var(--accent-color);
+
+        &.disabled {
+            cursor: initial;
+            color: gray;
+
+            &:hover {
+                background-color: darkgray;
+            }
+        }
+
+        &.active {
+            &:hover {
+                &.next {
+                    background-color: var(--accent-color);
+                }
+                
+                &.back {
+                    background-color: var(--primary-color);
+                }
+            }
         }
     }
 }
