@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import RelativeTime from '@yaireo/relative-time'
 import { httpServiceContext } from "../services/http.service";
 import Pager from "./pager";
+import { paginationLimit } from "../constants";
+
+const relativeTime = new RelativeTime();
 
 type SortDirection = "up" | "down";
 
@@ -10,6 +13,7 @@ export interface SortHeaderState {
     direction: SortDirection;
     activeHeader: string;
     type?: string;
+    index: number;
 }
 
 export interface SortHeaderProps {
@@ -17,46 +21,44 @@ export interface SortHeaderProps {
     displayText: React.ReactNode;
     direction?: SortDirection;
     disabled?: boolean;
-    toggled: ({direction: SortDirection, id: string}) => void;
+    toggled: ({ direction: SortDirection, id: string }) => void;
 }
 
 export function SortHeader(props: SortHeaderProps) {
-    return (<div className="table-header" onClick={() => !props.disabled && props.toggled({id: props.id, direction: (props.direction === 'up' ? 'down': 'up')})}>
+    return (<div className="table-header" onClick={() => !props.disabled && props.toggled({ id: props.id, direction: (props.direction === 'up' ? 'down' : 'up') })}>
         {props.displayText}
-        {props.direction && <i className={`arrow ${props.direction} ${props.direction ? 'ri-arrow-up-line': ''} `}></i>}
+        {props.direction && <i className={`arrow ${props.direction} ${props.direction ? 'ri-arrow-up-line' : ''} `}></i>}
     </div>)
 }
 
 export interface TypeToggleProps {
     activeToggled
-    toggled: (type:string) => void;
+    toggled: (type: string) => void;
 }
-
-// export function typeToggle(props) {
-
-// }
 
 export default function TierSearch() {
     const [tierLists, setTierLists] = useState([]);
-    const relativeTime = new RelativeTime(); 
     const httpService = useContext(httpServiceContext);
     const navigate = useNavigate();
 
     const [sortState, setSortState] = useState<SortHeaderState>({
         direction: "down",
         activeHeader: 'date',
-        type: null
+        type: null,
+        index: 0
     })
 
+    const [loadingState, setLoaderState] = useState(false);
 
     const loadData = (state?: SortHeaderState) => {
-        if(!state) {
+        if (!state) {
             state = sortState;
         }
-        console.log(state)
+        setLoaderState(true);
 
-        httpService.loadTiersList(state.activeHeader === "ranked", state.direction === "down", ).then(tiers => {
+        httpService.loadTiersList({ orderByCount: state.activeHeader === "ranked", descending: state.direction === "down" }, state.index).then(tiers => {
             setTierLists(tiers.entities);
+            setLoaderState(false);
         })
     }
 
@@ -65,9 +67,10 @@ export default function TierSearch() {
     }, [])
 
 
-    const viewTier = (type: string, id: number) => { navigate(`/${type}/${id}`, {replace: true}) };
-    const toggleSortHeader = (data: {direction: SortDirection, id: string}) => {
-        setSortState({...sortState,
+    const viewTier = (type: string, id: number) => { navigate(`/${type}/${id}`, { replace: true }) };
+    const toggleSortHeader = (data: { direction: SortDirection, id: string }) => {
+        setSortState({
+            ...sortState,
             direction: data.direction,
             activeHeader: data.id
         })
@@ -75,8 +78,20 @@ export default function TierSearch() {
         loadData({
             direction: data.direction,
             activeHeader: data.id,
-            type: sortState.type
+            type: sortState.type,
+            index: sortState.index
         });
+    }
+
+    const changePage = (next: boolean) => {
+        const newIndex = sortState.index + (next ? 1 : -1);
+        let currentState = {
+            ...sortState,
+            index: newIndex
+        }
+        setSortState(currentState)
+
+        loadData(currentState)
     }
 
     const headers = [{ display: 'type', sortId: 'type', disabled: true }, { display: '# ranked', sortId: 'ranked' }, { display: 'last Updated', sortId: 'date' }]
@@ -88,7 +103,7 @@ export default function TierSearch() {
                     <tr>
                         {headers.map(header => (
                             <td key={header.sortId}>
-                                <SortHeader id={header.sortId} displayText={header.display} toggled={toggleSortHeader} disabled={header.disabled}
+                                <SortHeader id={header.sortId} displayText={header.display} toggled={toggleSortHeader} disabled={header.disabled || loadingState}
                                     direction={sortState.activeHeader === header.sortId ? sortState.direction : null}></SortHeader>
                             </td>
                         ))}
@@ -111,7 +126,7 @@ export default function TierSearch() {
                 </tbody>
             </table>
             <div className="flex-align-right">
-                <Pager onClick={() => {}} disableFirst={true}></Pager>
+                <Pager onClick={changePage} disableFirst={sortState.index === 0} disableLast={tierLists.length < paginationLimit} loading={loadingState}></Pager>
             </div>
         </div>
     )

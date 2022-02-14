@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { IRenderComponent } from "./sortable"
 
 export interface Character {
@@ -29,3 +30,5 @@ export const CharacterItem = ({ data, children, dragging, last }: CharacterProps
         </div>
     </div>)
 }
+
+export const MemoCharacterItem = React.memo(CharacterItem);

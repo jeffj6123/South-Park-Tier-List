@@ -9,7 +9,6 @@ import { UserContext } from "../user-context";
 
 export function ViewEpisodeList() {
     let { id } = useParams();
-    console.log(id);
 
     const httpService = useContext(httpServiceContext);
     const { loggedIn } = useContext(UserContext);

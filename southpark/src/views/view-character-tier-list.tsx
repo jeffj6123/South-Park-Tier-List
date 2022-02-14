@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { characters } from "../all_characters";
-import { CharacterItem } from "../components/character-tile";
+import { CharacterItem, MemoCharacterItem } from "../components/character-tile";
 import { Grid } from "../components/sortable";
 import { characterType } from "../constants";
 import { httpServiceContext } from "../services/http.service";
@@ -23,13 +23,12 @@ export function ViewCharacterList() {
                 listOrder: httpService.getTierList()
             })
         })
-        console.log(state)
     }, []);
 
     let grid = (<div>Loading List</div>)
 
     if (!state.loading) {
-        grid = <Grid groups={state.episodesMap} RenderComponent={CharacterItem}
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoCharacterItem}
             listOrder={state.listOrder} disabled={true}></Grid>
     }
 

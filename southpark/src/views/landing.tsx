@@ -13,6 +13,8 @@ export function Landing() {
     const viewRandom = () => {
         httpService.getRandomTier().then(data => {
             navigate(`/${data.type}/${data.key}`, {replace: true})
+        }, () => {
+            console.log("error")
         })
     }
 

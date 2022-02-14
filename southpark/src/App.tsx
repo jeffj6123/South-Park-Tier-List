@@ -11,9 +11,12 @@ import { HttpService, httpServiceContext } from './services/http.service';
 import { EditCharacterList } from './views/edit-character-tier-list';
 import { ViewCharacterList } from './views/view-character-tier-list';
 import { masterCharacterList, masterEpisodeList } from './constants';
+import { NotificationHandler } from './components/notification-bar';
+import { NotificationService, NotificationServiceContext } from './services/notification.service';
 
 class App extends React.Component<{}, any> {
-  private httpService: HttpService = new HttpService();
+  private NotificationService: NotificationService = new NotificationService();
+  private httpService: HttpService = new HttpService(this.NotificationService);
 
   constructor(props) {
     super(props);
@@ -46,6 +49,7 @@ class App extends React.Component<{}, any> {
   render() {
     return (
       <UserContext.Provider value={this.state.user}>
+        <NotificationServiceContext.Provider value={this.NotificationService}>
         <httpServiceContext.Provider value={this.httpService}>
           <div>
             <Header></Header>
@@ -60,7 +64,9 @@ class App extends React.Component<{}, any> {
               {/* <Route path="about" element={<About />} /> */}
             </Routes>
           </div>
+          <NotificationHandler></NotificationHandler>
         </httpServiceContext.Provider>
+        </NotificationServiceContext.Provider>
       </UserContext.Provider>
     );
 

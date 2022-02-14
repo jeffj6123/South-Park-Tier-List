@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { characters } from "../all_characters";
-import { CharacterItem } from "../components/character-tile";
+import { CharacterItem, MemoCharacterItem } from "../components/character-tile";
 import { Grid } from "../components/sortable";
 import { characterType } from "../constants";
 import { httpServiceContext } from "../services/http.service";
@@ -23,7 +23,6 @@ export function EditCharacterList() {
         })
     }, [])
 
-
     const saveChanges = (changes: any) => {
         httpService.saveTierList(characterType, changes);
     }
@@ -31,12 +30,9 @@ export function EditCharacterList() {
     let grid = (<div>Login to start</div>)
 
     if (!state.loading) {
-        grid = <Grid groups={state.characterMap} RenderComponent={CharacterItem}
+        grid = <Grid groups={state.characterMap} RenderComponent={MemoCharacterItem}
             listOrder={state.listOrder} orderChange={saveChanges}></Grid>
     }
-
-    console.log(state)
-
 
     return (<div>
         {grid}

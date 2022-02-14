@@ -49,7 +49,6 @@ app.get('/api/ranking/random', async (req: express.Request, res: express.Respons
 
 app.get('/api/ranking/list', async (req: express.Request, res: express.Response) => {
     const { orderByCount, descending, type, cursor } = req.query;
-    console.log(descending)
     const results = await db.listEpisodeRankings({ orderByCount: orderByCount === "true",
                                                     descending: descending === "true",
                                                     type: (type || "").toString(),

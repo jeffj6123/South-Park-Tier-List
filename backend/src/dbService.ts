@@ -3,6 +3,13 @@ import {Gstore} from 'gstore-node';
 import rankCollection, { IRank, IRankCollection, RankType } from './rankCollection';
 import { Entity } from '@google-cloud/datastore';
 
+export interface ListQueryParams { 
+    orderByCount: boolean;
+    descending: boolean;
+    type?: string;
+    cursor?: string;
+}
+
 export class DBService {
     constructor(gstore: Gstore) { 
     }
@@ -41,8 +48,8 @@ export class DBService {
         return ranks.filter(rank => rank.rank !== "u").length;
     }
 
-    async listEpisodeRankings(options: { orderByCount: boolean, descending: boolean, type?: string, cursor?: string}) {
-       let queryResult = rankCollection.query();
+    async listEpisodeRankings(options: ListQueryParams) {
+       let queryResult = rankCollection.query().limit(1);
         if(options.orderByCount) {
            queryResult = queryResult.order("rankedCount", {descending: options.descending})
         }else{
@@ -71,4 +78,6 @@ export class DBService {
     async getMaster(type: string) {
         return await rankCollection.findOne({master: true, type});
     }
+
+
 }
