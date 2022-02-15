@@ -1,9 +1,14 @@
 import React from "react";
+import { defaultTimeLimitForNotification } from "../constants";
 import { IEvent, Subject } from "../utils/subject";
 
-interface NotificationEventInternal {
+interface NotificationEventWithId {
     event: INotificationEvent;
     id: string;
+}
+
+export interface INotificationListEvent {
+    data: NotificationEventWithId[];
 }
 
 export interface INotificationEvent extends IEvent {    
@@ -14,30 +19,36 @@ export interface INotificationEvent extends IEvent {
 }
 
 export class NotificationService extends Subject {
-    notifications: 
+    notifications: NotificationEventWithId[] = [];
     constructor() {
         super()
     }
 
     addNotification(notification: INotificationEvent) {
-        // this.notifyObservers(notification);
-
+        const id = Math.random().toString();
         
-        setTimeout(() => {
-            removeNotification(id);
-            console.log(id)
-        }, event.data.durationInMs || defaultTimeLimitForNotification)
-
-    }
-
-    removeNotification(id): string{
-        setState({
-            ...state,
-            notifications: state.notifications.filter(notification => notification.id !== id)
+        this.notifications.push({
+            event: notification,
+            id
         })
+
+        setTimeout(() => {
+            this.removeNotification(id);
+        }, notification.data.durationInMs || defaultTimeLimitForNotification)
+
+        this.sendNotifications();
     }
 
+    removeNotification(id: string){
+        this.notifications = this.notifications.filter(notification => notification.id !== id)
+        this.sendNotifications();
+    }
 
+    private sendNotifications() {
+        this.notifyObservers({
+            data: this.notifications
+        });
+    }
 }
 
 export const NotificationServiceContext = React.createContext<NotificationService>(new NotificationService());

@@ -28,7 +28,7 @@ export function ViewEpisodeList() {
         })
     }
 
-    let grid = (<div>Login to start</div>)
+    let grid = (<div>Loading Tier List</div>)
 
     if (!state.loading && loggedIn) {
         grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}

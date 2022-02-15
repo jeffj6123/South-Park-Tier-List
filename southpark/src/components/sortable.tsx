@@ -42,6 +42,7 @@ export interface GridProps {
   RenderComponent: RenderComponentType;
   orderChange?: (groups: Record<string, any[]>) => void;
   locked?: boolean;
+  rightSpaceContent?: React.ReactNode;
 }
 
 export function Grid(props: GridProps) {
@@ -80,13 +81,17 @@ export function Grid(props: GridProps) {
 
   return (
     <div className="tier-list-wrapper">
-      <div className="tier-navigation">
-        {props.listOrder.map( (tier, index) => (
-          <div key={tier} className="tier-nav-tab">
-            <span className={`tier-nav-letter ${visibleTiers.some(visibleTier => visibleTier.tier === tier) ? 'in-view' : ''}`} onClick={() => navigateToTier(tier)}>{tier}</span>
-            { index < (props.listOrder.length -1 ) && <span className="tier-nav-spacer">/</span>}
-          </div>))}
+      <div className="tier-topbar">
+        <div className="tier-navigation">
+          {props.listOrder.map( (tier, index) => (
+            <div key={tier} className="tier-nav-tab">
+              <span className={`tier-nav-letter ${visibleTiers.some(visibleTier => visibleTier.tier === tier) ? 'in-view' : ''}`} onClick={() => navigateToTier(tier)}>{tier}</span>
+              { index < (props.listOrder.length -1 ) && <span className="tier-nav-spacer">/</span>}
+            </div>))}
+        </div>
+        {props.rightSpaceContent}
       </div>
+
       <div className="tier-list">
       <DndContext
         sensors={sensors}
@@ -205,7 +210,7 @@ export function Grid(props: GridProps) {
     setItems((prev) => {
       const nextTier = findContainer(tier);
 
-      return {
+      const newState = {
         ...prev,
         [containerId]: [
           ...prev[containerId].filter((item) => item.id !== id)
@@ -215,11 +220,14 @@ export function Grid(props: GridProps) {
           ...prev[nextTier]
         ]
       };
+
+      if (props.orderChange) {
+        props.orderChange(newState);
+      }
+
+      return newState;
     });
 
-    if (props.orderChange) {
-      props.orderChange(items);
-    }
   }
 
   function findContainer(id: string) {

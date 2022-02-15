@@ -20,11 +20,6 @@ export interface ListQueryParams {
     orderByCount: boolean;
     descending: boolean;
     type?: string;
-    // cursor?: string;
-}
-
-export interface IListQueryResults {
-
 }
 
 export function isEqualShallowObjects(obj1: Object, obj2: Object) {
@@ -96,7 +91,7 @@ export class HttpService {
 
     async getRandomTier() {
         try {
-            throw new Error("test")
+            // throw new Error("test")
             const res = await axios.get<{key: string, type: string}>(`/api/ranking/random`);
 
             return res.data;
@@ -109,24 +104,30 @@ export class HttpService {
     }
 
     async loadTiersList(params: ListQueryParams, index: number) {
-        let cursor = "";
-        if(this.lastQueryParams && isEqualShallowObjects(this.lastQueryParams, params)) {
-            if(index < this.previousPagesCache.length) {
-                return Promise.resolve(this.previousPagesCache[index]);
+        try {
+            let cursor = "";
+            if(this.lastQueryParams && isEqualShallowObjects(this.lastQueryParams, params)) {
+                if(index < this.previousPagesCache.length) {
+                    return Promise.resolve(this.previousPagesCache[index]);
+                }else{
+                    cursor = this.previousPagesCache.at(-1).nextPageCursor;
+                }
             }else{
-                cursor = this.previousPagesCache.at(-1).nextPageCursor;
+                this.previousPagesCache = [];
             }
-        }else{
-            this.previousPagesCache = [];
+    
+            this.lastQueryParams = params;
+    
+            const res = await axios.get(`/api/ranking/list`, {params: {...params, cursor}})
+    
+            this.previousPagesCache.push(res.data);
+    
+            return res.data;
+        } catch(e) {
+            this.notificationService.addNotification({data: {
+                display: 'There was an issue loading the tier lists.'
+            }})
         }
-
-        this.lastQueryParams = params;
-
-        const res = await axios.get(`/api/ranking/list`, {params: {...params, cursor}})
-
-        this.previousPagesCache.push(res.data);
-
-        return res.data;
     }
 
     getTierList(): string[] {

@@ -20,10 +20,6 @@
         &.disabled {
             cursor: initial;
             color: gray;
-
-            &:hover {
-                background-color: darkgray;
-            }
         }
 
         &.active {
