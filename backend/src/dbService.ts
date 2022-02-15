@@ -49,7 +49,7 @@ export class DBService {
     }
 
     async listEpisodeRankings(options: ListQueryParams) {
-       let queryResult = rankCollection.query().limit(1);
+       let queryResult = rankCollection.query().limit(10);
         if(options.orderByCount) {
            queryResult = queryResult.order("rankedCount", {descending: options.descending})
         }else{
