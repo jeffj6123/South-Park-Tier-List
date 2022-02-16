@@ -19,7 +19,7 @@
 
         &.disabled {
             cursor: initial;
-            color: gray;
+            color: var(--disabled-color);
         }
 
         &.active {

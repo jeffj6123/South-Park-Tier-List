@@ -4,6 +4,7 @@ import RelativeTime from '@yaireo/relative-time'
 import { httpServiceContext } from "../services/http.service";
 import Pager from "./pager";
 import { paginationLimit } from "../constants";
+import Toggle, { MultiOptionToggle, MultiOptionToggleValue } from "./toggle";
 
 const relativeTime = new RelativeTime();
 
@@ -31,11 +32,6 @@ export function SortHeader(props: SortHeaderProps) {
     </div>)
 }
 
-export interface TypeToggleProps {
-    activeToggled
-    toggled: (type: string) => void;
-}
-
 export default function TierSearch() {
     const [tierLists, setTierLists] = useState([]);
     const httpService = useContext(httpServiceContext);
@@ -44,9 +40,11 @@ export default function TierSearch() {
     const [sortState, setSortState] = useState<SortHeaderState>({
         direction: "down",
         activeHeader: 'date',
-        type: null,
+        type: "",
         index: 0
     })
+
+    const options: MultiOptionToggleValue[] = [{display: 'Episodes', value: 'episodes'}, {display: 'Both', value: ''}, {display: 'Characters', value: 'characters'}]
 
     const [loadingState, setLoaderState] = useState(false);
 
@@ -56,7 +54,7 @@ export default function TierSearch() {
         }
         setLoaderState(true);
 
-        httpService.loadTiersList({ orderByCount: state.activeHeader === "ranked", descending: state.direction === "down" }, state.index).then(tiers => {
+        httpService.loadTiersList({ orderByCount: state.activeHeader === "ranked", descending: state.direction === "down", type: state.type }, state.index).then(tiers => {
             setTierLists(tiers.entities);
             setLoaderState(false);
         })
@@ -65,7 +63,6 @@ export default function TierSearch() {
     useEffect(() => {
         loadData();
     }, [])
-
 
     const viewTier = (type: string, id: number) => { navigate(`/${type}/${id}`, { replace: true }) };
     const toggleSortHeader = (data: { direction: SortDirection, id: string }) => {
@@ -94,10 +91,23 @@ export default function TierSearch() {
         loadData(currentState)
     }
 
+    const changeType = (next: MultiOptionToggleValue) => {
+        let currentState = {
+            ...sortState,
+            type: next.value
+        }
+
+        setSortState(currentState)
+
+        loadData(currentState)
+    }
+
     const headers = [{ display: 'type', sortId: 'type', disabled: true }, { display: '# ranked', sortId: 'ranked' }, { display: 'last Updated', sortId: 'date' }]
 
     return (
         <div className="landing-table">
+            <MultiOptionToggle values={options} disabled={loadingState} toggle={changeType} defaultIndex={1}></MultiOptionToggle>
+
             <table className="landing-table-container" >
                 <thead>
                     <tr>

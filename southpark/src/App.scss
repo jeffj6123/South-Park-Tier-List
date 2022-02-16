@@ -6,6 +6,7 @@
 @use 'styles/pager';
 @use 'styles/animations';
 @use 'styles/notificationBar';
+@use 'styles/toggle';
 
 :root {
   --main-bg-color: #282c34;
@@ -13,6 +14,7 @@
   --accent-color: #e51943;
   --primary-font-color: white;
   --tertiary-color: yellow;
+  --disabled-color: gray;
 }
 
 html {

@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import TierSearch from "../components/tier-search";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { stringify } from "querystring";
+import { useNavigate } from "react-router-dom";
 import { masterCharacterList, masterEpisodeList } from "../constants";
-import { HttpService, httpServiceContext } from "../services/http.service";
+import { httpServiceContext } from "../services/http.service";
+import { MultiOptionToggle } from "../components/toggle";
 
 export function Landing() {
 
@@ -25,9 +25,9 @@ export function Landing() {
     return (
         <div className="landing-container">
             <div className="landing-button-wrapper">
-                <button className="simple-button primary" onClick={() => viewRandom()}>View Random List</button>
-                <button className="simple-button secondary" onClick={() => navigateToMaster(masterEpisodeList)} >View Original Episode List</button>
-                <button className="simple-button secondary" onClick={() => navigateToMaster(masterCharacterList)} >View Original Character List</button>
+                <button className="simple-button vertical-center primary" onClick={() => viewRandom()}> <i className="ri-shuffle-line"></i> View Random List</button>
+                <button className="simple-button vertical-center secondary" onClick={() => navigateToMaster(masterEpisodeList)} > <i className="ri-tv-line"></i> View Original Episode List</button>
+                <button className="simple-button vertical-center secondary" onClick={() => navigateToMaster(masterCharacterList)} > <i className="ri-user-line"></i>View Original Character List</button>
             </div>
             <TierSearch></TierSearch>
             <div className="faq-blurb">
