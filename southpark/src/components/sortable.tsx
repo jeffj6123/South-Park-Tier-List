@@ -16,12 +16,12 @@ import { useDroppable } from "@dnd-kit/core";
 import { Episode } from "./row";
 
 import 'react-virtualized/styles.css';
-
-// But if you only use a few react-virtualized components,
-// And you're concerned about increasing your application's bundle size,
-// You can directly import only the components you need, like so:
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
+
+export interface BottomProps {
+  
+}
 
 export interface IRenderComponent {
   id: string;
@@ -30,7 +30,6 @@ export interface IRenderComponent {
   children?: React.ReactNode;
   dragging?: boolean | undefined;
   last?: boolean;
-  // changeTier?: (tier: string) => void;
 }
 
 type RenderComponentType = FunctionComponent<IRenderComponent> | ComponentClass<IRenderComponent>;
@@ -367,6 +366,7 @@ export interface SortableItemProps {
   disabled?: boolean;
   last?: boolean;
   selected?: boolean;
+
 }
 
 export function SortableItem(props: SortableItemProps) {
