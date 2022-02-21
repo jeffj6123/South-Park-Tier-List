@@ -33,9 +33,7 @@ export function isEqualShallowObjects(obj1: Object, obj2: Object) {
 }
 
 export class HttpService {
-    constructor(private notificationService: NotificationService) {
-
-    }
+    constructor(private notificationService: NotificationService) {}
     private cachedCollections: Record<string, Record<string, IRankable[]>> = {};
 
     private previousPagesCache = [];
@@ -49,6 +47,8 @@ export class HttpService {
           data = data.concat(changes[key].map(ep => { return { rank: key, id: ep.id } }))
         })
     
+        this.cachedCollections['mine'] = changes;
+
         const token = localStorage.getItem('authToken') || "";
         return axios.put(`/api/ranking/${type}`, data, {headers: {'authorization': token}}).then(res => {
           console.log("saved")
@@ -132,6 +132,11 @@ export class HttpService {
 
     getTierList(): string[] {
         return  ['s', 'a', 'b', 'c', 'd', 'f', 'u'];
+    }
+
+    compareRanks(rank1: string, rank2: string): number {
+        const tier = this.getTierList();
+        return tier.indexOf(rank1) - tier.indexOf(rank2);
     }
 } 
 
