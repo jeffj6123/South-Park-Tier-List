@@ -3,10 +3,10 @@ import TierSearch from "../components/tier-search";
 import { useNavigate } from "react-router-dom";
 import { masterCharacterList, masterEpisodeList } from "../constants";
 import { httpServiceContext } from "../services/http.service";
-import { MultiOptionToggle } from "../components/toggle";
+import { UserContext } from "../user-context";
 
 export function Landing() {
-
+    const { loggedIn }  = useContext(UserContext);
     const httpService = useContext(httpServiceContext);
     const navigate = useNavigate();
 
@@ -24,39 +24,49 @@ export function Landing() {
 
     return (
         <div className="landing-container">
+            {!loggedIn && (<div className="create-banner shadow">
+                Log in to create your own tier lists
+            </div>)}
+
             <div className="landing-button-wrapper">
                 <button className="simple-button vertical-center primary" onClick={() => viewRandom()}> <i className="ri-shuffle-line"></i> View Random List</button>
                 <button className="simple-button vertical-center secondary" onClick={() => navigateToMaster(masterEpisodeList)} > <i className="ri-tv-line"></i> View Original Episode List</button>
                 <button className="simple-button vertical-center secondary" onClick={() => navigateToMaster(masterCharacterList)} > <i className="ri-user-line"></i>View Original Character List</button>
             </div>
             <TierSearch></TierSearch>
-            <div className="faq-blurb">
+            <div className="faq-blurb first">
                 <h3>Why?</h3>
                 <div>
-                    Great question, my girlfriend Kiersten started watching southpark for the first time. Us being a fan of tier lists, felt this would be a good idea
-
+                    My girlfriend <span className="highlight-text">Kiersten</span> started watching southpark for the first time. We are both big fans of tier lists and thought this would be a great opportunity to mix the two.
                 </div>
             </div>
 
             <div className="faq-blurb">
                 <h3>Where do you get this data?</h3>
                 <div>
-                    I get this information from two locations. First is the southpark API that (blank) has put together which was by far the most useful and second I used the southpark wiki.
-                    The list of episodes was gathered from the southpark API and from there I scraped thumbnails and descriptions from the wiki.
+                    I get this information from two locations. 
+                    <ul>
+                        <li>
+                            The <a className="highlight-text" href="https://spapi.dev/">South Park API</a> has done a good job of pulling information off the official wiki. This provided a great starting point.
+                        </li>
+                        <li>
+                            The <a className="highlight-text" href="https://southpark.fandom.com" target="_blank"> South park Wiki </a> then provided all of the rest of the information.
+                        </li>
+                    </ul>
                 </div>
             </div>
 
             <div className="faq-blurb">
                 <h3>Why is there data missing?</h3>
                 <div>
-                    Most of the information is scraped and on top of that put together by volunteers. Inparticular the character lists for episodes seem to be missing and that is due to the api only having it for some.
+                    This information was either missing from the South Park API or I have a bug in my script for pulling data.
                 </div>
             </div>
 
             <div className="faq-blurb">
                 <h3>I would like to know a bit more</h3>
                 <div>
-                    I wrote up some of the challenges and approaches taken in the process of making this site, like frameworks used and scripts for pulling data.
+                    I plan on writing about some of the process of building this site in an article soon.
                 </div>
             </div>
         </div>

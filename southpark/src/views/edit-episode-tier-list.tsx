@@ -3,6 +3,7 @@ import { episodes } from "../all_episodes";
 import { MemoEp } from "../components/row";
 import PromiseLockedButton from "../components/save-button";
 import { Grid } from "../components/sortable";
+import Toggle from "../components/toggle";
 import { episodeType } from "../constants";
 import { httpServiceContext } from "../services/http.service";
 import { UserContext } from "../user-context";
@@ -14,6 +15,7 @@ export function EditEpisodeList() {
 
     const { loggedIn } = useContext(UserContext);
     const [loading, setLoading] = useState(true);
+    const [lockedDrag, setDragState] = useState(true);
     const [state, setState] = useState<any>({
         episodesMap: null,
     });
@@ -52,8 +54,8 @@ export function EditEpisodeList() {
 
 
     if (!loading && state.episodesMap) {
-        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp} rightSpaceContent={saveButton}
-            listOrder={listOrder} orderChange={updatedState}></Grid>
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp} rightSpaceContent={saveButton} leftSpaceContent={(<div> Lock Drag <Toggle toggle={(state) => {setDragState(state)}} ></Toggle></div>)}
+            listOrder={listOrder} orderChange={updatedState} disableDrag={lockedDrag}></Grid>
     }
 
     return (<div>

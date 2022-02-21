@@ -4,7 +4,37 @@
 }
 
 .faq-blurb {
-    margin-top: 20px;
+
+    &.first {
+        margin-top: 15px;
+    }
+
+    padding: 10px 5px;
+    border: 1px solid;
+    border-color: transparent;
+    border-radius: 5px;
+    transition: .25s border-color;
+
+    .highlight-text {
+        transition: .25s color;
+    }
+
+    &:hover {
+        border-color: var(--primary-color);
+    
+        .highlight-text {
+            color: var(--accent-color);
+        }
+    }
+
+    div {
+        padding-top: 5px;
+        padding-left: 10px;
+    }
+
+    li::marker {
+        color: var(--accent-color);
+    }
 }
 
 .cartman {
@@ -25,4 +55,18 @@
 .flex-align-right {
     display: flex;
     justify-content: flex-end;
+}
+
+.tier-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.create-banner {
+    padding: 20px;
+    border-radius: 5px;
+    width: fi;
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 75%, var(--accent-color) 100%);
 }

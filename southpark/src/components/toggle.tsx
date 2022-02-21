@@ -3,14 +3,19 @@ import React, { useState } from "react";
 export interface ToggleProps {
     value?: boolean;
     disabled?: boolean;
-    // toggle: (state: boolean) => void;
+    toggle: (state: boolean) => void;
 }
 
 export default function Toggle(props: ToggleProps) {
+    const [active, setActive] = useState<boolean>(props.value ? true : false);
 
+    const updateValue = (state: boolean) => {
+        setActive(state);
+        props.toggle(state);
+    }
 
     return (<label className="switch">
-        <input type="checkbox" />
+        <input type="checkbox" value={active.toString()} onChange={(event) => updateValue(event.target.checked)} />
         <span className="slider"></span>
     </label>)
 }

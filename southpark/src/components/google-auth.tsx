@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { NotificationServiceContext } from '../services/notification.service';
 import { UserContext } from '../user-context';
 
 
@@ -12,7 +13,6 @@ export const refreshTokenSetup = (res) => {
     const refreshToken = async () => {
       const newAuthRes = await res.reloadAuthResponse();
       refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-      console.log('newAuthRes:', newAuthRes);
       // saveUserToken(newAuthRes.access_token);  <-- save new token
       localStorage.setItem('authToken', newAuthRes.id_token);
   
@@ -34,6 +34,7 @@ export interface OnLoginInfo {
 
 export function Login() {
     const { setUserState } = useContext(UserContext)
+    const notificationService = useContext(NotificationServiceContext);
 
     const onSuccess = (res) => {
         refreshTokenSetup(res);
@@ -42,6 +43,11 @@ export function Login() {
 
     const onFailure = (res) => {
         console.log('Login failed: res:', res);
+        notificationService.addNotification({
+            data: {
+                display: 'There was an issue logging in.'
+            }
+        })
     };
 
     return (
