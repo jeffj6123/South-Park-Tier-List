@@ -32,7 +32,7 @@ app.use((req,res,next) => {
 })    
 // }
 
-// app.use(express.static('static'))
+app.use(express.static('static'))
 
 app.get('/api/ranking/:type/master', async (req: express.Request, res: express.Response) => {
     const { type } = req.params;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { characters, nameToIdMap } from '../all_characters';
 import { IRankable } from '../all_episodes';
 import { IRenderComponent } from './sortable';
 
@@ -30,25 +31,27 @@ export interface EpisodeItemProps extends IRenderComponent {
     children?: React.ReactNode;
 }
 
+//TODO FIX THE WAY CHARACTERS ARE GOTTEN
 export const EpisodeItem = ({ data, children, dragging, last }: EpisodeItemProps) => {
     return (<div className={`episode ${ !dragging ? 'hover-info' : ''}`}>
-        <div  className={`rounded inner ${last ? 'open-left' : ''}`}>
+        <div className={`rounded inner ${last ? 'open-left' : ''}`}>
             <div className={`additional-info `}>
-                <div style={{'overflow': 'auto', height: '100%'}}>
+                <div style={{ 'overflow': 'auto', height: '100%' }}>
                     <div>
                         <h2>
                             Summary
                         </h2>
                         {data.description}
                     </div>
-                <div>
-                    <h2> Characters</h2>
-                    <ul className='character-list'>
-                        {data.characters.map(char => (<li key={char.name}>
-                            {char.name}
-                        </li>))}
-                    </ul>
-                </div>
+                    <div>
+                        <h2> Characters</h2>
+                        <div className='character-list'>
+                            {data.characters.map(char => (<div className='character-list-item' key={char.name}>
+                                <img className='rounded' src={'/characters/' + nameToIdMap[char.name]?.id + '.png'} style={{ width: '20px' }}></img>
+                                {char.name}
+                            </div>))}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className='thumbnail-container'>

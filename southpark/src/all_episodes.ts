@@ -1,7 +1,7 @@
 import { Episode } from "./components/row"
 
 export interface IRankable {
-    id: string;
+    id: string | number;
 }
 export interface IRankResponse {
     ranks: { rank: string, id: string }[],

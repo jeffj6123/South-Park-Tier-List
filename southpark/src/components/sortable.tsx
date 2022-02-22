@@ -19,9 +19,12 @@ import 'react-virtualized/styles.css';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
 
-export interface BottomProps {
-  
+export interface BottomTileProps {
+
 }
+
+type bottomTypeComponent = FunctionComponent<BottomTileProps> | ComponentClass<BottomTileProps>;
+
 
 export interface IRenderComponent {
   id: string;
@@ -366,6 +369,7 @@ export interface SortableItemProps {
   data: any;
   row: string;
   ComponentRef: RenderComponentType;
+  bottomRef?: RenderComponentType;
   changeTier: (tier: string) => void;
   disabled?: boolean;
   dragLocked?: boolean;
@@ -386,6 +390,7 @@ export function SortableItem(props: SortableItemProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    cursor: (props.dragLocked || props.disabled) ? 'initial' : 'grab'
   };
 
   let insertedContent;

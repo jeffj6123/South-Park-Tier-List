@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { episodes } from "../all_episodes";
+import { BarChart } from "../components/breakdown";
 import { MemoEp } from "../components/row";
 import PromiseLockedButton from "../components/save-button";
 import { Grid } from "../components/sortable";
@@ -15,7 +16,7 @@ export function EditEpisodeList() {
 
     const { loggedIn } = useContext(UserContext);
     const [loading, setLoading] = useState(true);
-    const [lockedDrag, setDragState] = useState(true);
+    const [lockedDrag, setDragState] = useState(false);
     const [state, setState] = useState<any>({
         episodesMap: null,
     });
@@ -54,7 +55,11 @@ export function EditEpisodeList() {
 
 
     if (!loading && state.episodesMap) {
-        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp} rightSpaceContent={saveButton} leftSpaceContent={(<div> Lock Drag <Toggle toggle={(state) => {setDragState(state)}} ></Toggle></div>)}
+        grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp} rightSpaceContent={saveButton}
+        leftSpaceContent={(<div className="tier-topbar">
+            <BarChart ranks={state.episodesMap}></BarChart>
+            Lock Drag <Toggle toggle={(state) => {setDragState(state)}} ></Toggle>
+            </div>)}
             listOrder={listOrder} orderChange={updatedState} disableDrag={lockedDrag}></Grid>
     }
 

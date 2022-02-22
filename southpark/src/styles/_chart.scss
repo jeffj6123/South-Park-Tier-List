@@ -1,0 +1,70 @@
+.chart {
+    min-width: 120px;
+    border-collapse: collapse;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    gap: 2px;
+    text-transform: uppercase;
+
+    .bar-item {
+        display: flex;
+        gap: 5px;;
+
+        >:first-child {
+            min-width: 20px;
+        }
+
+        >:nth-child(2) {
+            min-width: 20px;
+        }
+
+        >:last-child {
+            flex: 1;
+        }
+    }
+
+    .chart-bar {
+        transition: .5s width;
+        background-color: var(--accent-color);
+        height: 100%;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+}
+
+.right-panel {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.info-layout {
+    position: absolute;
+    z-index: 10;
+    background-color: var(--main-bg-color);
+    display: flex;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    border: 2px solid var(--tertiary-color);
+    // background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 95%, var(--accent-color) 100%);
+}
+
+.tile-circle-container {
+    display: flex;
+    gap: 10px;
+}
+
+.info-tile-circle {
+    border-radius: 50px;
+    display: flex;
+    padding: 3px;
+    min-width: 20px;
+    text-align: center;
+    justify-content: center;
+    border: 2px solid var(--primary-color);
+}

@@ -11,3 +11,7 @@ indexes:
   - name: "type"
   - name: "lastUpdated"
     direction: desc
+- kind: "RankCollection"
+  properties:
+  - name: "type"
+  - name: "lastUpdated"

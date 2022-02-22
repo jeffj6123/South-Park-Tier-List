@@ -1,6 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { episodes } from "../all_episodes";
+import { BarChart } from "../components/breakdown";
+import LoadingScreen from "../components/loading-screen";
 import { MemoEp } from "../components/row";
 import { Grid } from "../components/sortable";
 import { episodeType } from "../constants";
@@ -18,7 +20,7 @@ export function ViewEpisodeList() {
         listOrder: []
     });
 
-    if (!state.episodesMap && loggedIn) {
+    useEffect(() => {
         httpService.loadTiers(episodeType, episodes, id).then(tier => {
             setState({
                 loading: false,
@@ -26,12 +28,14 @@ export function ViewEpisodeList() {
                 listOrder: httpService.getTierList()
             })
         })
-    }
+    }, [])
 
-    let grid = (<div>Loading Tier List</div>)
 
-    if (!state.loading && loggedIn) {
+    let grid = (<LoadingScreen></LoadingScreen>)
+
+    if (!state.loading) {
         grid = <Grid groups={state.episodesMap} RenderComponent={MemoEp}
+        leftSpaceContent={ <BarChart ranks={state.episodesMap}></BarChart>}
             listOrder={state.listOrder} disabled={true}></Grid>
     }
 

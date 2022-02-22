@@ -107,7 +107,7 @@ export default function TierSearch() {
     return (
         <div className="landing-table">
             <div className="tier-title">
-                <h2>Tier Lists</h2>
+                <h2>User Tier Lists</h2>
                 <MultiOptionToggle values={options} disabled={loadingState} toggle={changeType} defaultIndex={1}></MultiOptionToggle>
             </div>
 

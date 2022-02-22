@@ -3,6 +3,23 @@
     padding-top: 15px;
 }
 
+.landing-button-wrapper {
+    gap: 10px;
+    display: flex;
+    margin: 10px 0px;
+    justify-content: flex-end;
+}
+
+@media only screen and (max-width: 600px) {
+    .landing-container {
+        margin: 0px 10px;
+    }
+
+    .landing-button-wrapper {
+        gap: 5px;
+    }
+}
+
 .faq-blurb {
 
     &.first {
@@ -45,12 +62,6 @@
     transition: 1s right;
 }
 
-.landing-button-wrapper {
-    gap: 10px;
-    display: flex;
-    margin: 10px 0px;
-    justify-content: flex-end;
-}
 
 .flex-align-right {
     display: flex;
@@ -61,6 +72,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    text-align: center;
 }
 
 .create-banner {
