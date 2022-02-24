@@ -40,6 +40,7 @@ export function EditEpisodeList() {
     const updatedState = (changes) => {
         setState({ episodesMap: changes });
         setPendingChanges(true);
+        // saveChanges();
     }
 
     let grid = (<div>Login to start</div>)

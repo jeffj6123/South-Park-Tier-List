@@ -3,6 +3,7 @@ import { characters } from "../all_characters";
 import { MemoCharacterItem } from "../components/character-tile";
 import PromiseLockedButton from "../components/save-button";
 import { Grid } from "../components/sortable";
+import Toggle from "../components/toggle";
 import { characterType } from "../constants";
 import { httpServiceContext } from "../services/http.service";
 import { UserContext } from "../user-context";
@@ -17,6 +18,7 @@ export function EditCharacterList() {
         listOrder: []
     });
     const [pendingChanges, setPendingChanges] = useOnUnload(false, "You have unsaved changes! Are you sure you want to leave?")
+    const [lockedDrag, setDragState] = useState(false);
 
     useEffect(() => {
         if (loggedIn) {
@@ -52,7 +54,9 @@ export function EditCharacterList() {
 
     if (!state.loading) {
         grid = <Grid groups={state.characterMap} RenderComponent={MemoCharacterItem} rightSpaceContent={saveButton}
-            listOrder={state.listOrder} orderChange={updatedState}></Grid>
+            leftSpaceContent={(<div className="tier-topbar">
+                Lock Drag <Toggle toggle={(state) => { setDragState(state) }} ></Toggle>
+            </div>)} listOrder={state.listOrder} orderChange={updatedState} disableDrag={lockedDrag}></Grid>
     }
 
     return (<div>
