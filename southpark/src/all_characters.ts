@@ -1,4 +1,4 @@
-export const characters: any[] = [
+export const characters = [
     {
         "id": 1,
         "name": "Gerald Broflovski",
@@ -8198,3 +8198,8 @@ export const characters: any[] = [
         ]
     }
 ]
+
+export const nameToIdMap = {}
+characters.forEach(char => {
+    nameToIdMap[char.name] = char;
+})

@@ -1,4 +1,5 @@
 import React from 'react';
+import Spinner from './loader';
 
 export interface PagerProps {
     disableFirst?: boolean;
@@ -12,12 +13,7 @@ export default function Pager(props: PagerProps) {
     const lastDisabled = props.disableLast || props.loading;
 
     return (<div className='pager'>
-        {props.loading && <div>
-            <div className='loader rotate'>
-                <i className="ri-loader-5-fill"></i>
-            </div>
-        </div>}
-
+        {props.loading && <Spinner></Spinner>}
         <button className={`pager-button back ${firstDisabled ? 'disabled': 'active'}`} onClick={() => firstDisabled ? null : props.onClick(false)}>
             <i className="ri-arrow-left-s-line"></i>
         </button>

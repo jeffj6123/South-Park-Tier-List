@@ -12,6 +12,6 @@ export function CompareTier(props: CompareTierProps) {
     const rankCompare = httpService.compareRanks(props.myRank, props.item.rank);
 
     return (<div>
-
+        {rankCompare}
     </div>)
 }

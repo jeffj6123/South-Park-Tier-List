@@ -35,12 +35,15 @@
     }
 }
 
+@media only screen and (max-width: 600px) {
+    .simple-button {
+        padding: 5px;
+    }
+}
+
 .vertical-center {
     display: flex;
     gap: 5px;
     align-items: center;
 }
 
-.split-button {
-
-}

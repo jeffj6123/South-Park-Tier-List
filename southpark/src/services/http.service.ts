@@ -5,7 +5,7 @@ import { NotificationService } from './notification.service';
 
 export interface IRank {
     rank: string;
-    id: string;
+    id: string | number;
 }
 
 export interface IRankCollection {

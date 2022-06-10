@@ -11,7 +11,7 @@ export function DropDown(props: DropDownProps) {
     let dropdown: any = "";
     if (state) {
         dropdown = (<div className="dropdown-content">
-            <div className="user-dropdown" onMouseDown={(e) => { e.preventDefault(); }} onClick={() => setState(false)}>
+            <div onMouseDown={(e) => { e.preventDefault(); }} onClick={() => setState(false)}>
                 {props.dropdownContent}
 
             </div>

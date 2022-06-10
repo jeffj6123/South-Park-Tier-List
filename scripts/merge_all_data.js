@@ -1,5 +1,7 @@
 const fsP = require('fs/promises')
+const fs = require('fs')
 const Path = require('path')  
+const axios = require('axios');
 
 const listToMap = (list, key) => {
     return list.reduce( (map, item) => {
@@ -9,33 +11,26 @@ const listToMap = (list, key) => {
 }
 
 let mergeData =  async () => {
-    const episodes = JSON.parse(await fsP.readFile(Path.join(__dirname, 'all_episodes.json'), 'utf8'));
-    const chars = JSON.parse(await fsP.readFile(Path.join(__dirname, 'characters.json'), 'utf8'));
+    const episodes = JSON.parse(await fsP.readFile(Path.join(__dirname, 'episodes2.json'), 'utf8'));
+    const chars = JSON.parse(await fsP.readFile(Path.join(__dirname, 'characters2.json'), 'utf8'));
     const charMap = listToMap(chars, "url");
     
-    const descriptions = JSON.parse(await fsP.readFile(Path.join(__dirname, 'all_descris.json'), 'utf8'));
-    const descriptionMap = listToMap(descriptions, "id");
-
-    const result = episodes.map(ep => {
+    const result = episodes.map((ep, index) => {
         const id = ep.season.toString() + (ep.episode < 10 ? '0' : '') + ep.episode.toString();
 
-        let description = "";
-        if(id in descriptionMap) {
-            description = descriptionMap[id].description;
-        }else{
-            console.log("no description for " + id)
-        }
-
+        setTimeout(() => {
+            downloadImage(ep.thumbnail_url, id)
+        }, index * 100)
 
         return {
             ...ep,
             apiID: ep.id,
             id,
-            description,
             characters: ep.characters.map( id => {
                 const char = charMap[id];
                 return {
-                    name: char.name
+                    name: char.name,
+                    id: char.id
                 }
             })
         }
@@ -43,5 +38,23 @@ let mergeData =  async () => {
 
     await fsP.writeFile(Path.join(__dirname, 'combined_data.json'), JSON.stringify(result));
 }
+
+async function downloadImage(url, name) {
+    const path = Path.resolve(__dirname, 'images2', name + '.png')
+    const writer = fs.createWriteStream(path)
+  
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'stream'
+    })
+  
+    response.data.pipe(writer)
+  
+    return new Promise((resolve, reject) => {
+      writer.on('finish', resolve)
+      writer.on('error', reject)
+    })
+  }
 
 mergeData();

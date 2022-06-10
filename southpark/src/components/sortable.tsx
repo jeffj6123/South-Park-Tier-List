@@ -19,9 +19,12 @@ import 'react-virtualized/styles.css';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
 
-export interface BottomProps {
-  
+export interface BottomTileProps {
+
 }
+
+type bottomTypeComponent = FunctionComponent<BottomTileProps> | ComponentClass<BottomTileProps>;
+
 
 export interface IRenderComponent {
   id: string;
@@ -38,10 +41,12 @@ export interface GridProps {
   groups: Record<string, any[]>;
   listOrder: string[];
   disabled?: boolean;
+  disableDrag?: boolean;
   RenderComponent: RenderComponentType;
   orderChange?: (groups: Record<string, any[]>) => void;
   locked?: boolean;
   rightSpaceContent?: React.ReactNode;
+  leftSpaceContent?: React.ReactNode;
 }
 
 export function Grid(props: GridProps) {
@@ -81,6 +86,7 @@ export function Grid(props: GridProps) {
   return (
     <div className="tier-list-wrapper">
       <div className="tier-topbar">
+      {props.leftSpaceContent}
         <div className="tier-navigation">
           {props.listOrder.map( (tier, index) => (
             <div key={tier} className="tier-nav-tab">
@@ -93,6 +99,7 @@ export function Grid(props: GridProps) {
 
       <div className="tier-list">
       <DndContext
+        
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
@@ -182,12 +189,12 @@ export function Grid(props: GridProps) {
                       const item = container[i];
                       items2.push(
                         <SortableItem key={item.id} id={item.id} ComponentRef={props.RenderComponent} data={item} row={tier.tier} selected={item.id === activeId?.id}
-                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={props.disabled} last={(i + 1) === toIndex && !lessItemsThenMax} />)
+                          changeTier={(newTier) => moveTier(newTier, item.id, i, tier.tier)} disabled={props.disabled} dragLocked={props.disableDrag} last={(i + 1) === toIndex && !lessItemsThenMax} />)
                     }
 
                     return (
                       <div key={key} style={style} >
-                        <Container id={tier.tier} items={container} >
+                        <Container id={tier.tier} items={container}  >
                           {items2}
                         </Container>
                       </div>
@@ -362,8 +369,10 @@ export interface SortableItemProps {
   data: any;
   row: string;
   ComponentRef: RenderComponentType;
+  bottomRef?: RenderComponentType;
   changeTier: (tier: string) => void;
   disabled?: boolean;
+  dragLocked?: boolean;
   last?: boolean;
   selected?: boolean;
 
@@ -376,11 +385,12 @@ export function SortableItem(props: SortableItemProps) {
     setNodeRef,
     transform,
     transition
-  } = useSortable({ id: props.id, disabled: props.disabled });
+  } = useSortable({ id: props.id, disabled: (props.disabled || props.dragLocked) });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    cursor: (props.dragLocked || props.disabled) ? 'initial' : 'grab'
   };
 
   let insertedContent;
