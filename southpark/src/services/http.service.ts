@@ -22,6 +22,13 @@ export interface ListQueryParams {
     type?: string;
 }
 
+export interface ILine {
+    character: string;
+    line: string;
+    lineNumber: number;
+    episode: string;
+}
+
 export function isEqualShallowObjects(obj1: Object, obj2: Object) {
     const obj1Keys = Object.keys(obj1);
     const obj2Keys = Object.keys(obj2);
@@ -137,6 +144,11 @@ export class HttpService {
     compareRanks(rank1: string, rank2: string): number {
         const tier = this.getTierList();
         return tier.indexOf(rank1) - tier.indexOf(rank2);
+    }
+
+    async getQuote(): Promise<ILine> {
+        const res = await axios.get<ILine>(`/api/script/random`);
+        return res.data;
     }
 } 
 

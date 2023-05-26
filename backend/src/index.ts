@@ -25,12 +25,13 @@ const PORT = process.env.PORT || 4444;
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(cors())
-// if(process.env.development) {
-app.use((req,res,next) => {
-    console.log(req.url)
-    next();
-})    
-// }
+
+if(process.env.development) {
+    app.use((req,res,next) => {
+        console.log(req.url)
+        next();
+    })    
+}
 
 app.use(express.static('static'))
 
@@ -100,8 +101,6 @@ app.get('/api/ranking/:id', async (req: express.Request, res: express.Response) 
     }
 });
 
-
-
 app.put('/api/ranking/:type', authMiddleWare, async (req: Request, res: express.Response) => {
     const { type } = req.params;
     
@@ -128,6 +127,12 @@ app.put('/api/ranking/:type', authMiddleWare, async (req: Request, res: express.
         }
     }
 });
+
+app.get('/api/script/random', async (req: express.Request, res: express.Response) => {
+    const quote = await db.getLine(['Kyle', 'Stan', 'Cartman', 'Kenny', 'Butters'].map(char => char.toLowerCase()), 20);
+    res.json(quote);
+});
+
 
 app.get('/*',(req: Request, res: express.Response) => {
     console.warn("catch all: " + req.url)

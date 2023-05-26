@@ -20114,6 +20114,7 @@ export const episodes: Episode[] = data.map(ep => {
       season: ep.season,
       thumbnail: '/images/' + ep.id + '.jpg',
       id: ep.id,
+      apiID: ep.apiID,
       description: ep.description,
       characters: ep.characters
     }

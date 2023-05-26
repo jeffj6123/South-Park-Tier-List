@@ -4,6 +4,7 @@ export interface SaveButtonProps {
     promiseCallBack: () => Promise<any>;
     onSuccess?: () => void;
 
+    css?: string;
     neutralDisplay: React.ReactNode;
     activeDisplay: React.ReactNode;
 }
@@ -21,7 +22,7 @@ export default function PromiseLockedButton(props: SaveButtonProps) {
         })
     }
 
-    return (<button className="simple-button primary" disabled={inProgress} onClick={start}>
+    return (<button className={`simple-button primary ${props.css ? props.css : ''}`} disabled={inProgress} onClick={start}>
         {inProgress ? props.activeDisplay : props.neutralDisplay}
     </button>)
 }

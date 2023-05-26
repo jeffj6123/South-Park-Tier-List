@@ -33,6 +33,14 @@
             background-color: var(--tertiary-color);
         }
     }
+
+    &:disabled {
+        border-color: gray;
+        &:hover{
+            background-color: gray;
+        }
+        cursor: unset;
+    }
 }
 
 @media only screen and (max-width: 600px) {

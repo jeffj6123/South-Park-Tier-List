@@ -1,4 +1,4 @@
-import { Gstore, instances } from 'gstore-node';
+import {  instances } from 'gstore-node';
 
 const gstore = instances.get('unique-id');
 const { Schema } = gstore;

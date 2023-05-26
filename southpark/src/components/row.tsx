@@ -18,6 +18,7 @@ export interface Episode extends IRankable {
 
     thumbnail: string;
 
+    apiID: number;
     id: string;
 }
 

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import TierSearch from "../components/tier-search";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { masterCharacterList, masterEpisodeList } from "../constants";
 import { httpServiceContext } from "../services/http.service";
 import { UserContext } from "../user-context";
@@ -34,6 +34,11 @@ export function Landing() {
                 <button className="simple-button vertical-center secondary" onClick={() => navigateToMaster(masterCharacterList)} > <i className="ri-user-line"></i>View Original Character List</button>
             </div>
             <TierSearch></TierSearch>
+            <Link to={'/quote'}>
+                <div className="play-game" >
+                    Who Said It? Game
+                </div>
+            </Link>
             <div className="faq-blurb first">
                 <h3>Why?</h3>
                 <div>

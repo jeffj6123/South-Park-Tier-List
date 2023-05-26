@@ -4,7 +4,7 @@ import { IRenderComponent } from "./sortable"
 export interface Character {
     name: string;
     id: string;
-    thumbnail: string;
+    // thumbnail: string;
     occupation: string;
     grade: string;
 }

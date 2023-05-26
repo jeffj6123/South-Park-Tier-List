@@ -84,3 +84,18 @@
     font-size: 1.1rem;
     background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 75%, var(--accent-color) 100%);
 }
+
+.play-game {
+    border: 2px solid var(--tertiary-color);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.4rem;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 800;
+    color: white;
+    background-color: transparent;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -13,6 +13,7 @@ import { ViewCharacterList } from './views/view-character-tier-list';
 import { masterCharacterList, masterEpisodeList } from './constants';
 import { NotificationHandler } from './components/notification-bar';
 import { NotificationService, NotificationServiceContext } from './services/notification.service';
+import { Quote } from './views/quote';
 
 class App extends React.Component<{}, any> {
   private NotificationService: NotificationService = new NotificationService();
@@ -54,6 +55,7 @@ class App extends React.Component<{}, any> {
           <div>
             <Header></Header>
             <Routes>
+              <Route path="/quote" element={<Quote/> } />
               <Route path="/episodes/mine" element={<EditEpisodeList/> } />
               <Route path={masterEpisodeList} element={<ViewEpisodeList/>} />
               <Route path="/episodes/:id" element={<ViewEpisodeList/>} />

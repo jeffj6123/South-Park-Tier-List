@@ -1,7 +1,7 @@
-import { IRanking } from './interfaces';
 import {Gstore} from 'gstore-node';
 import rankCollection, { IRank, IRankCollection, RankType } from './rankCollection';
-import { Entity } from '@google-cloud/datastore';
+const path = require('path')  
+const fsP = require('fs/promises');
 
 export interface ListQueryParams { 
     orderByCount: boolean;
@@ -79,5 +79,21 @@ export class DBService {
         return await rankCollection.findOne({master: true, type});
     }
 
+    async readFileAsJson(filename: string) {
+        return JSON.parse(await fsP.readFile(filename));
+    }
+    
+    async getLine(characters: string[], lineLengthMinimum: number) {
+        const lines = await this.readFileAsJson(path.join(__dirname, 'all_script_lines.json')) as IScriptLine[];
+        const validLines = lines.filter(line => (line.line.length > lineLengthMinimum) && characters.indexOf(line.character.toLowerCase()) > -1); //characters.includes(line.character)
+        const line = validLines[Math.floor(Math.random() * validLines.length)]
+        return line;
+    }
+}
 
+export interface IScriptLine {
+    character: string;
+    line: string;
+    lineNumber: number;
+    episode: string;
 }
